@@ -4,6 +4,7 @@ import { FieldValues } from "react-hook-form/dist/types/fields";
 import { FieldErrors } from "react-hook-form/dist/types/errors";
 import { PropsWithChildren } from "react";
 import { Connection } from "@/app/types/Connection";
+import { Button } from "@/app/components/Button/Button";
 
 interface InputProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;
@@ -98,11 +99,7 @@ export function CreateConnection({ onSubmitted }: Props) {
         Password:{" "}
       </Input>
 
-      <input
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        type="submit"
-        value={"Create"}
-      />
+      <Button type={"submit"}>Create</Button>
     </form>
   );
 }
