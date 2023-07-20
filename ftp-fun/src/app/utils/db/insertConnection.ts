@@ -1,25 +1,26 @@
 import { Connection } from "@/app/types/Connection";
-import { Database } from "@/app/utils/db/getDb";
+import { Database } from "@/app/utils/db/openSqlLitDb";
+import { DbBase } from "@/app/utils/db/Db";
 
 export class ConnectionDb {
-  private db: Database;
+  private db: DbBase;
 
-  constructor(db: Database) {
+  constructor(db: DbBase) {
     this.db = db;
   }
 
   async getConnections(db: Database) {
     const query = `SELECT * FROM connection;`;
-    const sql = await this.db.prepare(query);
-
-    return await sql.all<Required<Connection>[]>();
+    return await this.db.query(query);
   }
 
   async insertConnection(connection: Connection, db: Database) {
     const query = `INSERT INTO connection (host, username, password) VALUES ($host, $username, $password) RETURNING *;`;
-    const sql = await this.db.prepare(query);
 
-    const result = await sql.all<Required<Connection>[]>(connection);
+    const result = await this.db.query<Required<Connection>[], Connection>(
+      query,
+      connection,
+    );
 
     if (result.length === 0) {
       throw new Error(`Failed to insert connection ${connection.host}`);
@@ -42,9 +43,10 @@ SET connection = $connection,
     verified = $verified
 WHERE id = $id
 RETURNING *;`;
-    const sql = await this.db.prepare(query);
-
-    const result = await sql.all<Required<Connection>[]>(connection);
+    const result = await this.db.query<Required<Connection>[], Connection>(
+      query,
+      connection,
+    );
 
     if (result.length === 0) {
       throw new Error(`Failed to update connection ${connection.host}`);

@@ -4,7 +4,7 @@ import * as fs from "fs";
 
 export type Database = SqliteDatabase<sqlite3.Database, sqlite3.Statement>;
 
-export async function getDb(filepath: string): Promise<Database> {
+export async function openSqlLitDb(filepath: string): Promise<Database> {
   if (!fs.existsSync(filepath)) {
     throw new Error(`Db does not exist at ${filepath}`);
   }
