@@ -3,6 +3,7 @@ CREATE TABLE connection (
   id SERIAL PRIMARY KEY,
   host TEXT,
   user TEXT,
+  verified INTEGER DEFAULT 0,
   password TEXT
 );
 
@@ -20,6 +21,6 @@ CREATE TABLE directory_cache (
 );
 
 -- migrate:down
-DELETE TABLE directory_cache;
-DELETE TABLE session;
-DELETE TABLE connection;
+DROP TABLE directory_cache;
+DROP TABLE session;
+DROP TABLE connection;
