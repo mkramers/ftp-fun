@@ -1,4 +1,4 @@
-import { Connection as ConnectionType } from "../types/Connection";
+import { Connection as ConnectionType } from "@/app/types/Connection";
 import React from "react";
 
 interface Props {

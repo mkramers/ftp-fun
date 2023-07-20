@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export type Connection = {
   id?: number;
   hostname: string;
@@ -6,3 +8,23 @@ export type Connection = {
   password: string;
   verified?: boolean;
 };
+
+const connectionSchema = z.object({
+  id: z.number().optional(),
+  hostname: z.string(),
+  port: z.number(),
+  username: z.string(),
+  password: z.string(),
+  verified: z.boolean().optional(),
+});
+
+export function tryParseConnection(input: unknown): Connection | undefined {
+  let connection: Connection;
+  try {
+    connection = connectionSchema.parse(input);
+  } catch (error) {
+    console.error(`Failed to parse connection: ${error}`);
+    return undefined;
+  }
+  return connection;
+}
