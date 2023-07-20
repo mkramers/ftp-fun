@@ -1,57 +1,7 @@
-import { Path, SubmitHandler, useForm } from "react-hook-form";
-import { UseFormRegister } from "react-hook-form/dist/types/form";
-import { FieldValues } from "react-hook-form/dist/types/fields";
-import { FieldErrors } from "react-hook-form/dist/types/errors";
-import { PropsWithChildren } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Connection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
-
-interface InputProps<TFieldValues extends FieldValues> {
-  name: Path<TFieldValues>;
-  placeholder?: string;
-  errorMessage?: string;
-  register: UseFormRegister<TFieldValues>;
-  errors: FieldErrors<TFieldValues>;
-  type?: "text" | "password";
-}
-
-function Input<TFieldValues extends FieldValues>({
-  name,
-  placeholder,
-  errorMessage = "This field is required",
-  register,
-  errors,
-  children,
-  type = "text",
-}: PropsWithChildren<InputProps<TFieldValues>>) {
-  const hasError = !!errors[name];
-
-  return (
-    <div className={"mb-4"}>
-      <label
-        className={"block text-gray-700 text-sm font-bold mb-2"}
-        htmlFor={name}
-      >
-        {children}
-      </label>
-      <input
-        autoComplete={"false"}
-        className={
-          hasError
-            ? "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-            : "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        }
-        placeholder={placeholder}
-        type={type}
-        id={name}
-        {...register(name, { required: true })}
-      />
-      {hasError && (
-        <p className={"text-red-500 text-xs italic"}>{errorMessage}</p>
-      )}
-    </div>
-  );
-}
+import { Input } from "@/app/components/Input/Input";
 
 interface Props {
   onSubmitted: (data: Connection) => void;
