@@ -1,8 +1,9 @@
 -- migrate:up
 CREATE TABLE connection (
   id SERIAL PRIMARY KEY,
-  host TEXT,
-  user TEXT,
+  hostname TEXT,
+  port INT,
+  username TEXT,
   verified INTEGER DEFAULT 0,
   password TEXT
 );

@@ -24,7 +24,7 @@ export function CreateConnection({ onSubmitted }: Props) {
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
-        name={"host"}
+        name={"hostname"}
         placeholder={"Host"}
         register={register}
         errors={errors}

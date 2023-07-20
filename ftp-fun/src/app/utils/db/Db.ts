@@ -5,7 +5,7 @@ export class DbBase {
     }
   }
 
-  async query<TResult, TParams>(
+  async query<TResult, TParams = any>(
     query: string,
     params?: TParams,
   ): Promise<TResult[]> {

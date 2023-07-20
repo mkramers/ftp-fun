@@ -1,6 +1,7 @@
 export type Connection = {
   id?: number;
-  host: string;
+  hostname: string;
+  port: number;
   username: string;
   password: string;
   verified?: boolean;

@@ -1,5 +1,4 @@
 import { Connection } from "@/app/types/Connection";
-import { Database } from "@/app/utils/db/openSqlLitDb";
 import { DbBase } from "@/app/utils/db/Db";
 
 export class ConnectionDb {
@@ -7,14 +6,15 @@ export class ConnectionDb {
 
   constructor(db: DbBase) {
     this.db = db;
+    ``;
   }
 
-  async getConnections(db: Database) {
+  async getAll() {
     const query = `SELECT * FROM connection;`;
-    return await this.db.query(query);
+    return await this.db.query<Required<Connection>>(query);
   }
 
-  async insertConnection(connection: Connection, db: Database) {
+  async insert(connection: Connection) {
     const query = `INSERT INTO connection (host, username, password) VALUES ($host, $username, $password) RETURNING *;`;
 
     const result = await this.db.query<Required<Connection>[], Connection>(
@@ -33,7 +33,7 @@ export class ConnectionDb {
     return result[0];
   }
 
-  async updateConnection(connection: Required<Connection>, db: Database) {
+  async update(connection: Required<Connection>) {
     const query = `
 UPDATE connection
 SET connection = $connection,

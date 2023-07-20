@@ -1,40 +1,23 @@
-"use client";
+import React from "react";
+import { openSqlLiteDb } from "@/app/utils/db/openSqlLiteDb";
+import { ConnectionDb } from "@/app/utils/db/ConnectionDb";
+import { Main } from "@/app/components/Main";
+import { Connection } from "@/app/types/Connection";
 
-import { Button } from "@/app/components/Button/Button";
-import React, { useState } from "react";
-import Modal from "@/app/components/Modal/Modal";
-import { CreateConnection } from "@/app/components/CreateConnection/CreateConnection";
+async function getData() {
+  const db = await openSqlLiteDb("./db/db.sqlite3");
+  const connectionDb = new ConnectionDb(db);
+  return await connectionDb.getAll();
+}
 
-export default function Home() {
-  const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+async function insertConnection(connection: Connection) {
+  const db = await openSqlLiteDb("./db/db.sqlite3");
+  const connectionDb = new ConnectionDb(db);
+  await connectionDb.insert(connection);
+}
 
-  const handleCreateConnectionClicked = () => {
-    setCreateIsDialogOpen(true);
-  };
+export default async function Home() {
+  const connections = await getData();
 
-  const handleCloseDialog = () => {
-    setCreateIsDialogOpen(false);
-  };
-
-  return (
-    <>
-      <Modal
-        title={"Create Connection"}
-        isOpen={createIsDialogOpen}
-        setIsOpen={setCreateIsDialogOpen}
-      >
-        <CreateConnection onSubmitted={handleCloseDialog} />
-      </Modal>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div>
-          <p>Hello.</p>
-          <div className="mt-4">
-            <Button onClick={handleCreateConnectionClicked}>
-              Create Connection
-            </Button>
-          </div>
-        </div>
-      </main>
-    </>
-  );
+  return <Main connections={connections} />;
 }
