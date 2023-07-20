@@ -3,7 +3,7 @@ import { UseFormRegister } from "react-hook-form/dist/types/form";
 import { FieldValues } from "react-hook-form/dist/types/fields";
 import { FieldErrors } from "react-hook-form/dist/types/errors";
 import { PropsWithChildren } from "react";
-import { Connection } from "@/types/Connection";
+import { Connection } from "@/app/types/Connection";
 
 interface InputProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;

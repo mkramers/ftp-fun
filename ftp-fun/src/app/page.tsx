@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/app/components/Button/Button";
 import React, { useState } from "react";
-import Modal from "@/components/Modal/Modal";
-import { CreateConnection } from "@/components/CreateConnection/CreateConnection";
+import Modal from "@/app/components/Modal/Modal";
+import { CreateConnection } from "@/app/components/CreateConnection/CreateConnection";
 
 export default function Home() {
   const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
