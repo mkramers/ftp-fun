@@ -1,11 +1,9 @@
-"use client";
-
 import { Path, SubmitHandler, useForm } from "react-hook-form";
 import { UseFormRegister } from "react-hook-form/dist/types/form";
 import { FieldValues } from "react-hook-form/dist/types/fields";
 import { FieldErrors } from "react-hook-form/dist/types/errors";
 import { PropsWithChildren } from "react";
-import { useRouter } from "next/navigation";
+import { Connection } from "@/types/Connection";
 
 interface InputProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;
@@ -54,23 +52,18 @@ function Input<TFieldValues extends FieldValues>({
   );
 }
 
-type Inputs = {
-  host: string;
-  username: string;
-  password: string;
-};
+interface Props {
+  onSubmitted: (data: Connection) => void;
+}
 
-export function CreateConnection() {
+export function CreateConnection({ onSubmitted }: Props) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const router = useRouter();
-
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    console.log(data);
-    router.back();
+  } = useForm<Connection>();
+  const onSubmit: SubmitHandler<Connection> = (data) => {
+    onSubmitted(data);
   };
 
   return (
@@ -108,6 +101,7 @@ export function CreateConnection() {
       <input
         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         type="submit"
+        value={"Create"}
       />
     </form>
   );

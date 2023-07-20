@@ -1,7 +1,7 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import React, { PropsWithChildren, ReactNode } from "react";
+import React, { ReactNode } from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -10,20 +10,14 @@ export const metadata: Metadata = {
   description: "A fun FTP client",
 };
 
-interface RootLayoutProps {
-  modal: ReactNode;
+interface Props {
+  children: ReactNode;
 }
 
-export default function RootLayout({
-  children,
-  modal,
-}: PropsWithChildren<RootLayoutProps>) {
+export default function RootLayout({ children }: Props) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        {children}
-        {modal}
-      </body>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

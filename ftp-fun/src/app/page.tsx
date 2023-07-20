@@ -1,14 +1,40 @@
-import { Button, LinkButton } from "@/components/Button/Button";
+"use client";
+
+import { Button } from "@/components/Button/Button";
+import React, { useState } from "react";
+import Modal from "@/components/Modal/Modal";
+import { CreateConnection } from "@/components/CreateConnection/CreateConnection";
 
 export default function Home() {
+  const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+
+  const handleCreateConnectionClicked = () => {
+    setCreateIsDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setCreateIsDialogOpen(false);
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div>
-        <p>Hello.</p>
-        <div className="mt-4">
-          <LinkButton href={"/create"}>Create Connection</LinkButton>
+    <>
+      <Modal
+        title={"Create Connection"}
+        isOpen={createIsDialogOpen}
+        setIsOpen={setCreateIsDialogOpen}
+      >
+        <CreateConnection onSubmitted={handleCloseDialog} />
+      </Modal>
+      <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <div>
+          <p>Hello.</p>
+          <div className="mt-4">
+            <Button onClick={handleCreateConnectionClicked}>
+              Create Connection
+            </Button>
+          </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </>
   );
 }
