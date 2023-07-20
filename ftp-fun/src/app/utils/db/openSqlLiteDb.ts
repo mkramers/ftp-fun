@@ -1,7 +1,7 @@
 import { open } from "sqlite";
 import sqlite3 from "sqlite3";
 import * as fs from "fs";
-import { DbBase } from "@/app/utils/db/Db";
+import { DbBase } from "@/app/utils/db/DbBase";
 import { SqlLiteDb } from "@/app/utils/db/SqlLiteDb";
 
 export async function openSqlLiteDb(filepath: string): Promise<DbBase> {

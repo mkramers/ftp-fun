@@ -6,19 +6,35 @@ import { CreateConnection } from "@/app/components/CreateConnection";
 import { Connection as ConnectionType } from "@/app/types/Connection";
 import { Connection } from "@/app/components/Connection";
 import { Button } from "@/app/components/Button/Button";
+import useSWRMutation from "swr/mutation";
 
 interface Props {
   connections: ConnectionType[];
 }
 
+async function insertConnection(
+  url: string,
+  { arg: connection }: { arg: ConnectionType },
+) {
+  await fetch(url, {
+    method: "POST",
+    body: JSON.stringify(connection),
+  });
+}
+
 export function Main({ connections }: Props) {
   const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+
+  const { trigger } = useSWRMutation("/connection", insertConnection, {
+    optimisticData: [connections],
+  });
 
   const handleCreateConnectionClicked = () => {
     setCreateIsDialogOpen(true);
   };
 
   const handleOnConnectionSubmitted = async (connection: ConnectionType) => {
+    await trigger(connection);
     setCreateIsDialogOpen(false);
   };
 

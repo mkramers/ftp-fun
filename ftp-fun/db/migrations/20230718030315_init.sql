@@ -1,23 +1,23 @@
 -- migrate:up
 CREATE TABLE connection (
-  id SERIAL PRIMARY KEY,
-  hostname TEXT,
-  port INT,
-  username TEXT,
-  verified INTEGER DEFAULT 0,
-  password TEXT
+  id INTEGER PRIMARY KEY,
+  hostname TEXT NOT NULL,
+  port INT NOT NULL,
+  username TEXT NOT NULL,
+  password TEXT NOT NULL,
+  verified INTEGER  NOT NULL DEFAULT 0
 );
 
 CREATE TABLE session (
-  id SERIAL PRIMARY KEY,
-  connection_id INT,
+  id INTEGER PRIMARY KEY,
+  connection_id INT NOT NULL,
   FOREIGN KEY(connection_id) REFERENCES connection(id)
 );
 
 CREATE TABLE directory_cache (
-  id SERIAL PRIMARY KEY,
-  session_id INT,
-  tree TEXT,
+  id INTEGER PRIMARY KEY,
+  session_id INT NOT NULL,
+  tree TEXT NOT NULL,
   FOREIGN KEY(session_id) REFERENCES session(id)
 );
 

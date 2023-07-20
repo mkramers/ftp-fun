@@ -7,6 +7,7 @@ interface Props {
 export function Connection({ connection }: Props) {
   return (
     <div key={connection.id}>
+      <p>{connection.id}</p>
       <p>
         {connection.hostname}:{connection.port}
       </p>
