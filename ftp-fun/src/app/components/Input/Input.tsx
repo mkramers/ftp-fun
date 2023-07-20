@@ -3,6 +3,7 @@ import { Path } from "react-hook-form";
 import { UseFormRegister } from "react-hook-form/dist/types/form";
 import { FieldErrors } from "react-hook-form/dist/types/errors";
 import { PropsWithChildren } from "react";
+import { RegisterOptions } from "react-hook-form/dist/types/validator";
 
 interface InputProps<TFieldValues extends FieldValues> {
   name: Path<TFieldValues>;
@@ -10,7 +11,8 @@ interface InputProps<TFieldValues extends FieldValues> {
   errorMessage?: string;
   register: UseFormRegister<TFieldValues>;
   errors: FieldErrors<TFieldValues>;
-  type?: "text" | "password";
+  type?: "text" | "password" | "number";
+  options?: RegisterOptions<TFieldValues>;
 }
 
 export function Input<TFieldValues extends FieldValues>({
@@ -21,6 +23,7 @@ export function Input<TFieldValues extends FieldValues>({
   errors,
   children,
   type = "text",
+  options,
 }: PropsWithChildren<InputProps<TFieldValues>>) {
   const hasError = !!errors[name];
 
@@ -42,7 +45,7 @@ export function Input<TFieldValues extends FieldValues>({
         placeholder={placeholder}
         type={type}
         id={name}
-        {...register(name, { required: true })}
+        {...register(name, options)}
       />
       {hasError && (
         <p className={"text-red-500 text-xs italic"}>{errorMessage}</p>

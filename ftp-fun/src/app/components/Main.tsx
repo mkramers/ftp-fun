@@ -16,6 +16,7 @@ async function insertConnection(
   url: string,
   { arg: connection }: { arg: ConnectionType },
 ) {
+  console.log("connection", connection);
   await fetch(url, {
     method: "POST",
     body: JSON.stringify(connection),
@@ -25,7 +26,7 @@ async function insertConnection(
 export function Main({ connections }: Props) {
   const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
 
-  const { trigger } = useSWRMutation("/connection", insertConnection, {
+  const { trigger } = useSWRMutation("/connections", insertConnection, {
     optimisticData: [connections],
   });
 

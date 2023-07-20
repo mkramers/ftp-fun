@@ -32,6 +32,16 @@ export function CreateConnection({ onSubmitted }: Props) {
         Host:{" "}
       </Input>
       <Input
+        name={"port"}
+        placeholder={"Port"}
+        type={"number"}
+        register={register}
+        options={{ valueAsNumber: true }}
+        errors={errors}
+      >
+        Port:{" "}
+      </Input>
+      <Input
         name={"username"}
         placeholder={"Username"}
         register={register}
