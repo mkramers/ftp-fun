@@ -43,10 +43,30 @@ async function deleteConnection(
   return tryParseConnections(body?.connections);
 }
 
+async function editConnection(
+  url: string,
+  { arg: connection }: { arg: ConnectionType },
+) {
+  const response = await fetch(url, {
+    method: "PATCH",
+    body: JSON.stringify(connection),
+  });
+
+  const body = await response.json();
+
+  return tryParseConnections(body?.connections);
+}
+
 export function Main({ connections }: Props) {
   const [allConnections, setAllConnections] = useState(connections);
 
+  const [editingConnection, setEditingConnection] = useState<
+    ConnectionType | undefined
+  >(undefined);
+
   const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+
+  const [editIsDialogOpen, setEditIsDialogOpen] = useState(false);
 
   useEffect(() => {
     setAllConnections(connections);
@@ -68,11 +88,19 @@ export function Main({ connections }: Props) {
     },
   );
 
+  const { trigger: triggerEdit } = useSWRMutation(
+    "/connections",
+    editConnection,
+    {
+      optimisticData: [connections],
+    },
+  );
+
   const handleCreateConnectionClicked = () => {
     setCreateIsDialogOpen(true);
   };
 
-  const handleOnConnectionSubmitted = async (connection: ConnectionType) => {
+  const handleCreateConnection = async (connection: ConnectionType) => {
     const newConnections = await triggerInsert(connection);
     if (!newConnections) {
       throw new Error("Failed to insert/parse connections");
@@ -80,6 +108,24 @@ export function Main({ connections }: Props) {
 
     setAllConnections((connections) => [...connections, ...newConnections]);
     setCreateIsDialogOpen(false);
+  };
+
+  const handleOnEditConnection = async (connection: ConnectionType) => {
+    setEditingConnection(connection);
+    setEditIsDialogOpen(true);
+  };
+
+  const handleConnectionEdited = async (connection: ConnectionType) => {
+    const editedConnections = await triggerEdit(connection);
+    if (!editedConnections) {
+      throw new Error("Failed to edit/parse connections");
+    }
+
+    setAllConnections((connections) =>
+      connections.map((c) => (c.id === connection.id ? connection : c)),
+    );
+    setEditingConnection(undefined);
+    setEditIsDialogOpen(false);
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {
@@ -93,10 +139,6 @@ export function Main({ connections }: Props) {
     );
   };
 
-  const handleEditConnection = async (connection: ConnectionType) => {
-    //
-  };
-
   return (
     <>
       <Modal
@@ -104,7 +146,17 @@ export function Main({ connections }: Props) {
         isOpen={createIsDialogOpen}
         setIsOpen={setCreateIsDialogOpen}
       >
-        <CreateConnection onCreated={handleOnConnectionSubmitted} />
+        <CreateConnection onChanged={handleCreateConnection} />
+      </Modal>
+      <Modal
+        title={"Edit Connection"}
+        isOpen={editIsDialogOpen}
+        setIsOpen={setEditIsDialogOpen}
+      >
+        <CreateConnection
+          onChanged={handleConnectionEdited}
+          connection={editingConnection}
+        />
       </Modal>
       <main className="flex min-h-screen flex-col items-center p-24 w-full">
         <p>Hello.</p>
@@ -114,7 +166,7 @@ export function Main({ connections }: Props) {
               key={index}
               connection={connection}
               onDelete={handleDeleteConnection}
-              onEdit={handleEditConnection}
+              onEdit={handleOnEditConnection}
             />
           ))}
         </div>

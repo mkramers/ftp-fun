@@ -4,17 +4,19 @@ import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
 
 interface Props {
-  onCreated: (data: Connection) => void;
+  connection?: Connection;
+  onChanged: (data: Connection) => void;
 }
 
-export function CreateConnection({ onCreated }: Props) {
+export function CreateConnection({ connection, onChanged }: Props) {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Connection>();
+  } = useForm<Connection>({ defaultValues: connection });
+
   const onSubmit: SubmitHandler<Connection> = (data) => {
-    onCreated(data);
+    onChanged(data);
   };
 
   return (
@@ -59,7 +61,7 @@ export function CreateConnection({ onCreated }: Props) {
         Password:{" "}
       </Input>
 
-      <Button type={"submit"}>Create</Button>
+      <Button type={"submit"}>Submit</Button>
     </form>
   );
 }
