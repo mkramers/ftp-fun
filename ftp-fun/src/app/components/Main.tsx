@@ -16,7 +16,6 @@ async function insertConnection(
   url: string,
   { arg: connection }: { arg: ConnectionType },
 ) {
-  console.log("connection", connection);
   await fetch(url, {
     method: "POST",
     body: JSON.stringify(connection),
