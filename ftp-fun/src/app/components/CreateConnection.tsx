@@ -4,17 +4,17 @@ import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
 
 interface Props {
-  onSubmitted: (data: Connection) => void;
+  onCreated: (data: Connection) => void;
 }
 
-export function CreateConnection({ onSubmitted }: Props) {
+export function CreateConnection({ onCreated }: Props) {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Connection>();
   const onSubmit: SubmitHandler<Connection> = (data) => {
-    onSubmitted(data);
+    onCreated(data);
   };
 
   return (

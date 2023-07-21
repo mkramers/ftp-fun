@@ -46,7 +46,7 @@ export function Main({ connections }: Props) {
         isOpen={createIsDialogOpen}
         setIsOpen={setCreateIsDialogOpen}
       >
-        <CreateConnection onSubmitted={handleOnConnectionSubmitted} />
+        <CreateConnection onCreated={handleOnConnectionSubmitted} />
       </Modal>
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div>
