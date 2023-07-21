@@ -1,9 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
-import { Connection as ConnectionType } from "@/app/types/Connection";
+import {
+  Connection as ConnectionType,
+  tryParseConnections,
+} from "@/app/types/Connection";
 import { Connection } from "@/app/components/Connection";
 import { Button } from "@/app/components/Button/Button";
 import useSWRMutation from "swr/mutation";
@@ -16,14 +19,24 @@ async function insertConnection(
   url: string,
   { arg: connection }: { arg: ConnectionType },
 ) {
-  await fetch(url, {
+  const response = await fetch(url, {
     method: "POST",
     body: JSON.stringify(connection),
   });
+
+  const body = await response.json();
+
+  return tryParseConnections(body?.connections);
 }
 
 export function Main({ connections }: Props) {
+  const [allConnections, setAllConnections] = useState(connections);
+
   const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setAllConnections(connections);
+  }, [connections]);
 
   const { trigger } = useSWRMutation("/connections", insertConnection, {
     optimisticData: [connections],
@@ -34,7 +47,12 @@ export function Main({ connections }: Props) {
   };
 
   const handleOnConnectionSubmitted = async (connection: ConnectionType) => {
-    await trigger(connection);
+    const newConnections = await trigger(connection);
+    if (!newConnections) {
+      throw new Error("Failed to insert/parse connections");
+    }
+
+    setAllConnections((connections) => [...connections, ...newConnections]);
     setCreateIsDialogOpen(false);
   };
 
@@ -50,7 +68,7 @@ export function Main({ connections }: Props) {
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
         <div>
           <p>Hello.</p>
-          {connections.map((connection, index) => (
+          {allConnections.map((connection, index) => (
             <Connection connection={connection} key={index} />
           ))}
           <div className="mt-4">

@@ -2,27 +2,23 @@ import { NextResponse } from "next/server";
 
 import { Connection, tryParseConnection } from "@/app/types/Connection";
 import { getDb } from "@/app/utils/db/db";
-import { QueryParams } from "@/app/utils/db/SqlLiteDb";
+
+type DbConnection = Omit<Connection, "verified"> & { verified: number };
+
+function parseQueryResult(connection: Required<DbConnection>): Connection {
+  return {
+    ...connection,
+    verified: connection.verified === 1,
+  };
+}
 
 export async function getConnections() {
   const db = await getDb();
 
   const query = `SELECT * FROM connection;`;
 
-  return await db.query<Required<Connection>>(query);
-}
-
-function getConnectionQueryParams(
-  connection: Connection,
-): QueryParams<Connection> {
-  return {
-    $id: connection.id,
-    $hostname: connection.hostname,
-    $port: connection.port,
-    $username: connection.username,
-    $password: connection.password,
-    $verified: connection.verified,
-  };
+  const dbConnections = await db.query<Required<DbConnection>[]>(query);
+  return dbConnections.map(parseQueryResult);
 }
 
 export async function GET() {
@@ -41,12 +37,14 @@ export async function POST(request: Request) {
 
   const query = `INSERT INTO connection (hostname, port, username, password) VALUES ($hostname, $port, $username, $password) RETURNING *;`;
 
-  const params = getConnectionQueryParams(connection);
+  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+    $hostname: connection.hostname,
+    $port: connection.port,
+    $username: connection.username,
+    $password: connection.password,
+  });
 
-  const connections = await db.query<
-    Required<Connection>[],
-    QueryParams<Connection>
-  >(query, params);
+  const connections = dbConnections.map(parseQueryResult);
 
   return NextResponse.json({ connections });
 }
@@ -71,13 +69,16 @@ SET hostname = $hostname,
 WHERE id = $id
 RETURNING *;`;
 
-  const params = getConnectionQueryParams(connection);
+  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+    $id: connection.id,
+    $hostname: connection.hostname,
+    $port: connection.port,
+    $username: connection.username,
+    $password: connection.password,
+    $verified: connection.verified ? 1 : 0,
+  });
 
-  console.log("params", params);
-  const connections = await db.query<
-    Required<Connection>[],
-    QueryParams<Connection>
-  >(query, params);
+  const connections = dbConnections.map(parseQueryResult);
 
   return NextResponse.json({ connections });
 }

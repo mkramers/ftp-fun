@@ -8,7 +8,7 @@ export class DbBase {
   async query<TResult, TParams = any>(
     query: string,
     params?: TParams,
-  ): Promise<TResult[]> {
+  ): Promise<TResult> {
     throw new Error("Method not implemented.");
   }
 }

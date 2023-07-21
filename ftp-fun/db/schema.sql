@@ -5,7 +5,7 @@ CREATE TABLE connection (
   port INT NOT NULL,
   username TEXT NOT NULL,
   password TEXT NOT NULL,
-  verified INTEGER  NOT NULL DEFAULT 0
+  verified INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE session (
   id INTEGER PRIMARY KEY,
