@@ -29,6 +29,20 @@ async function insertConnection(
   return tryParseConnections(body?.connections);
 }
 
+async function deleteConnection(
+  url: string,
+  { arg: connection }: { arg: ConnectionType },
+) {
+  const response = await fetch(url, {
+    method: "DELETE",
+    body: JSON.stringify(connection),
+  });
+
+  const body = await response.json();
+
+  return tryParseConnections(body?.connections);
+}
+
 export function Main({ connections }: Props) {
   const [allConnections, setAllConnections] = useState(connections);
 
@@ -38,22 +52,49 @@ export function Main({ connections }: Props) {
     setAllConnections(connections);
   }, [connections]);
 
-  const { trigger } = useSWRMutation("/connections", insertConnection, {
-    optimisticData: [connections],
-  });
+  const { trigger: triggerInsert } = useSWRMutation(
+    "/connections",
+    insertConnection,
+    {
+      optimisticData: [connections],
+    },
+  );
+
+  const { trigger: triggerDelete } = useSWRMutation(
+    "/connections",
+    deleteConnection,
+    {
+      optimisticData: [connections],
+    },
+  );
 
   const handleCreateConnectionClicked = () => {
     setCreateIsDialogOpen(true);
   };
 
   const handleOnConnectionSubmitted = async (connection: ConnectionType) => {
-    const newConnections = await trigger(connection);
+    const newConnections = await triggerInsert(connection);
     if (!newConnections) {
       throw new Error("Failed to insert/parse connections");
     }
 
     setAllConnections((connections) => [...connections, ...newConnections]);
     setCreateIsDialogOpen(false);
+  };
+
+  const handleDeleteConnection = async (connection: ConnectionType) => {
+    const deletedConnections = await triggerDelete(connection);
+    if (!deletedConnections) {
+      throw new Error("Failed to delete/parse connections");
+    }
+
+    setAllConnections((connections) =>
+      connections.filter((c) => c.id !== connection.id),
+    );
+  };
+
+  const handleEditConnection = async (connection: ConnectionType) => {
+    //
   };
 
   return (
@@ -69,7 +110,12 @@ export function Main({ connections }: Props) {
         <p>Hello.</p>
         <div className={"flex flex-col gap-2 w-1/2"}>
           {allConnections.map((connection, index) => (
-            <Connection connection={connection} key={index} />
+            <Connection
+              key={index}
+              connection={connection}
+              onDelete={handleDeleteConnection}
+              onEdit={handleEditConnection}
+            />
           ))}
         </div>
         <div className="mt-4">

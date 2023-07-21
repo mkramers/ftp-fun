@@ -82,3 +82,27 @@ RETURNING *;`;
 
   return NextResponse.json({ connections });
 }
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+
+  const connection = tryParseConnection(body);
+  if (!connection) {
+    return NextResponse.json({ message: "Invalid connection" });
+  }
+
+  const db = await getDb();
+
+  const query = `
+DELETE FROM connection
+WHERE id = $id
+RETURNING *;`;
+
+  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+    $id: connection.id,
+  });
+
+  const connections = dbConnections.map(parseQueryResult);
+
+  return NextResponse.json({ connections });
+}
