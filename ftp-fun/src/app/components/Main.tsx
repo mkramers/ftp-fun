@@ -65,17 +65,17 @@ export function Main({ connections }: Props) {
       >
         <CreateConnection onCreated={handleOnConnectionSubmitted} />
       </Modal>
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div>
-          <p>Hello.</p>
+      <main className="flex min-h-screen flex-col items-center p-24 w-full">
+        <p>Hello.</p>
+        <div className={"flex flex-col gap-2 w-1/2"}>
           {allConnections.map((connection, index) => (
             <Connection connection={connection} key={index} />
           ))}
-          <div className="mt-4">
-            <Button onClick={handleCreateConnectionClicked}>
-              Create Connection
-            </Button>
-          </div>
+        </div>
+        <div className="mt-4">
+          <Button onClick={handleCreateConnectionClicked}>
+            Create Connection
+          </Button>
         </div>
       </main>
     </>
