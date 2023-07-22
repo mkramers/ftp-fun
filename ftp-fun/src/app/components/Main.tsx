@@ -139,6 +139,10 @@ export function Main({ connections }: Props) {
     );
   };
 
+  const handleTestConnection = async (connection: ConnectionType) => {
+    //
+  };
+
   return (
     <>
       <Modal
@@ -167,6 +171,7 @@ export function Main({ connections }: Props) {
               connection={connection}
               onDelete={handleDeleteConnection}
               onEdit={handleOnEditConnection}
+              onTest={handleTestConnection}
             />
           ))}
         </div>

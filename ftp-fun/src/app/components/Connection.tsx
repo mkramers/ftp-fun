@@ -7,9 +7,10 @@ interface Props {
   connection: ConnectionType;
   onDelete: (connection: ConnectionType) => void;
   onEdit: (connection: ConnectionType) => void;
+  onTest: (connection: ConnectionType) => void;
 }
 
-export function Connection({ connection, onDelete, onEdit }: Props) {
+export function Connection({ connection, onDelete, onEdit, onTest }: Props) {
   return (
     <div
       className={
@@ -22,6 +23,7 @@ export function Connection({ connection, onDelete, onEdit }: Props) {
       <Label title={"Username"} value={connection.username} />
       <div className={"flex flex-row justify-center gap-2"}>
         <Button onClick={() => onEdit(connection)}>Edit</Button>
+        <Button onClick={() => onTest(connection)}>Test</Button>
         <Button onClick={() => onDelete(connection)}>Delete</Button>
       </div>
     </div>
