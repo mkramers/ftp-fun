@@ -8,7 +8,7 @@ async function getConnections(url: string) {
   return await response.json();
 }
 
-export function useConnections() {
+export function useConnections(initialConnections: Connection[]) {
   const { data, error, isLoading } = useSWR("/connections", getConnections);
 
   if (error) {
@@ -16,7 +16,7 @@ export function useConnections() {
   }
 
   if (isLoading) {
-    return [];
+    return initialConnections;
   }
 
   const connectionsSchema = z.array(connectionSchema);
