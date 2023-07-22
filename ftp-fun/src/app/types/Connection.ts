@@ -18,8 +18,6 @@ export const connectionSchema = z.object({
   verified: z.boolean(),
 });
 
-const connectionsSchema = z.array(connectionSchema);
-
 export function tryParseConnection(input: unknown): Connection | undefined {
   let connection: Connection;
   try {
@@ -29,15 +27,4 @@ export function tryParseConnection(input: unknown): Connection | undefined {
     return undefined;
   }
   return connection;
-}
-
-export function tryParseConnections(input: unknown): Connection[] | undefined {
-  let connections: Connection[];
-  try {
-    connections = connectionsSchema.parse(input);
-  } catch (error) {
-    console.error(`Failed to parse connection: ${error}`);
-    return undefined;
-  }
-  return connections;
 }

@@ -13,9 +13,9 @@ export class SqlLiteDb extends DbBase {
   async query<TResult, TParams>(
     query: string,
     params?: TParams,
-  ): Promise<TResult[]> {
+  ): Promise<TResult> {
     const sql = await this.db.prepare(query);
-    return await sql.all<TResult[]>(params);
+    return await sql.all<TResult>(params);
   }
 }
 
