@@ -5,7 +5,9 @@ import { getDb } from "@/app/utils/db/db";
 
 type DbConnection = Omit<Connection, "verified"> & { verified: number };
 
-function parseQueryResult(connection: Required<DbConnection>): Connection {
+export function parseQueryResult(
+  connection: Required<DbConnection>,
+): Connection {
   return {
     ...connection,
     verified: connection.verified === 1,
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
   const body = await request.json();
   const connection = tryParseConnection(body);
   if (!connection) {
-    return NextResponse.json({ message: "Invalid connection" });
+    return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
 
   const db = await getDb();
@@ -54,7 +56,7 @@ export async function PATCH(request: Request) {
 
   const connection = tryParseConnection(body);
   if (!connection) {
-    return NextResponse.json({ message: "Invalid connection" });
+    return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
 
   const db = await getDb();
@@ -88,7 +90,7 @@ export async function DELETE(request: Request) {
 
   const connection = tryParseConnection(body);
   if (!connection) {
-    return NextResponse.json({ message: "Invalid connection" });
+    return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
 
   const db = await getDb();
