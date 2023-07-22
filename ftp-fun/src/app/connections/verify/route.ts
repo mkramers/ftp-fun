@@ -24,7 +24,10 @@ export async function GET(request: Request) {
   // test connection
   const verified = true;
 
-  const connections = await updateConnection({ ...connection, verified });
+  const updatedConnection = await updateConnection({ ...connection, verified });
+  if (!updatedConnection) {
+    throw new Error("Error updating connection");
+  }
 
-  return NextResponse.json({ connections });
+  return NextResponse.json(updatedConnection);
 }

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
 
   const newConnection = await insertConnection(connection);
 
-  return NextResponse.json({ connection: newConnection });
+  return NextResponse.json(newConnection);
 }
 
 export async function PATCH(request: Request) {
@@ -41,7 +41,7 @@ export async function PATCH(request: Request) {
 
   const updatedConnection = await updateConnection(connection);
 
-  return NextResponse.json({ connection: updatedConnection });
+  return NextResponse.json(updatedConnection);
 }
 
 export async function DELETE(request: Request) {
@@ -57,5 +57,5 @@ export async function DELETE(request: Request) {
 
   const connection = await deleteConnection(id);
 
-  return NextResponse.json({ connection });
+  return NextResponse.json(connection);
 }
