@@ -76,7 +76,7 @@ export function useInsertConnection() {
   };
 }
 
-async function editConnection(
+async function updateConnection(
   url: string,
   { arg: connection }: { arg: ConnectionType },
 ) {
@@ -90,11 +90,11 @@ async function editConnection(
   return tryParseConnection(body?.connection);
 }
 
-export function useEditConnection() {
+export function useUpdateConnection() {
   const { setConnections } = useContext(Context);
   const { trigger: triggerEdit } = useSWRMutation(
     "/connections",
-    editConnection,
+    updateConnection,
   );
 
   return async (connection: Connection) => {

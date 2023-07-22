@@ -9,48 +9,51 @@ import { Button } from "@/app/components/Button/Button";
 import {
   useConnections,
   useDeleteConnection,
-  useEditConnection,
   useInsertConnection,
+  useUpdateConnection,
 } from "@/app/context/ConnectionContextProvider";
 
 export function Content() {
   const connections = useConnections();
   const insertConnection = useInsertConnection();
-  const editConnection = useEditConnection();
+  const updateConnection = useUpdateConnection();
   const deleteConnection = useDeleteConnection();
 
-  const [editingConnection, setEditingConnection] = useState<
+  const [selectedConnection, setSelectedConnection] = useState<
     ConnectionType | undefined
   >(undefined);
 
-  const [createIsDialogOpen, setCreateIsDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
-  const [editIsDialogOpen, setEditIsDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const handleCreateConnectionClicked = () => {
-    setCreateIsDialogOpen(true);
+    setSelectedConnection(undefined);
+    setIsCreateDialogOpen(true);
   };
 
-  const handleOnEditConnection = async (connection: ConnectionType) => {
-    setEditingConnection(connection);
-    setEditIsDialogOpen(true);
+  const handleEditConnectionClicked = async (connection: ConnectionType) => {
+    setSelectedConnection(connection);
+    setIsEditDialogOpen(true);
   };
 
   const handleCreateConnection = async (connection: ConnectionType) => {
     await insertConnection(connection);
 
-    setCreateIsDialogOpen(false);
+    setIsCreateDialogOpen(false);
   };
 
-  const handleConnectionEdited = async (connection: ConnectionType) => {
-    await editConnection(connection);
+  const handleUpdateConnection = async (connection: ConnectionType) => {
+    await updateConnection(connection);
 
-    setEditingConnection(undefined);
-    setEditIsDialogOpen(false);
+    setSelectedConnection(undefined);
+    setIsEditDialogOpen(false);
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {
     await deleteConnection(connection.id);
+
+    setSelectedConnection(undefined);
   };
 
   const handleTestConnection = async (connection: ConnectionType) => {
@@ -61,19 +64,19 @@ export function Content() {
     <main className="flex min-h-screen flex-col items-center p-24 w-full">
       <Modal
         title={"Create Connection"}
-        isOpen={createIsDialogOpen}
-        setIsOpen={setCreateIsDialogOpen}
+        isOpen={isCreateDialogOpen}
+        setIsOpen={setIsCreateDialogOpen}
       >
         <CreateConnection onChanged={handleCreateConnection} />
       </Modal>
       <Modal
         title={"Edit Connection"}
-        isOpen={editIsDialogOpen}
-        setIsOpen={setEditIsDialogOpen}
+        isOpen={isEditDialogOpen}
+        setIsOpen={setIsEditDialogOpen}
       >
         <CreateConnection
-          onChanged={handleConnectionEdited}
-          connection={editingConnection}
+          onChanged={handleUpdateConnection}
+          connection={selectedConnection}
         />
       </Modal>
       <p>Hello.</p>
@@ -83,7 +86,7 @@ export function Content() {
             key={connection.id}
             connection={connection}
             onDelete={handleDeleteConnection}
-            onEdit={handleOnEditConnection}
+            onUpdate={handleEditConnectionClicked}
             onTest={handleTestConnection}
           />
         ))}
