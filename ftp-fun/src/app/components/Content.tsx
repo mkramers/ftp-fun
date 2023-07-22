@@ -1,60 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import {
-  Connection as ConnectionType,
-  tryParseConnection,
-} from "@/app/types/Connection";
-import useSWRMutation from "swr/mutation";
+import React, { useState } from "react";
+import { Connection as ConnectionType } from "@/app/types/Connection";
 import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
 import { Connection } from "@/app/components/Connection";
 import { Button } from "@/app/components/Button/Button";
+import {
+  useConnections,
+  useDeleteConnection,
+  useEditConnection,
+  useInsertConnection,
+} from "@/app/context/ConnectionContextProvider";
 
-async function insertConnection(
-  url: string,
-  { arg: connection }: { arg: ConnectionType },
-) {
-  const response = await fetch(url, {
-    method: "POST",
-    body: JSON.stringify(connection),
-  });
-
-  const body = await response.json();
-
-  return tryParseConnection(body?.connection);
-}
-
-async function deleteConnection(url: string, { arg: id }: { arg: number }) {
-  const response = await fetch(url, {
-    method: "DELETE",
-    body: JSON.stringify({ id }),
-  });
-
-  const body = await response.json();
-  return tryParseConnection(body?.connection);
-}
-
-async function editConnection(
-  url: string,
-  { arg: connection }: { arg: ConnectionType },
-) {
-  const response = await fetch(url, {
-    method: "PATCH",
-    body: JSON.stringify(connection),
-  });
-
-  const body = await response.json();
-
-  return tryParseConnection(body?.connection);
-}
-
-interface Props2 {
-  connections: ConnectionType[];
-}
-
-export function Content({ connections }: Props2) {
-  const [allConnections, setAllConnections] = useState(connections);
+export function Content() {
+  const connections = useConnections();
+  const insertConnection = useInsertConnection();
+  const editConnection = useEditConnection();
+  const deleteConnection = useDeleteConnection();
 
   const [editingConnection, setEditingConnection] = useState<
     ConnectionType | undefined
@@ -64,40 +27,8 @@ export function Content({ connections }: Props2) {
 
   const [editIsDialogOpen, setEditIsDialogOpen] = useState(false);
 
-  useEffect(() => {
-    setAllConnections(connections);
-  }, [connections]);
-
-  const { trigger: triggerInsert } = useSWRMutation(
-    "/connections",
-    insertConnection,
-  );
-
-  const { trigger: triggerDelete } = useSWRMutation(
-    "/connections",
-    deleteConnection,
-    {
-      optimisticData: [connections],
-    },
-  );
-
-  const { trigger: triggerEdit } = useSWRMutation(
-    "/connections",
-    editConnection,
-  );
-
   const handleCreateConnectionClicked = () => {
     setCreateIsDialogOpen(true);
-  };
-
-  const handleCreateConnection = async (connection: ConnectionType) => {
-    const newConnection = await triggerInsert(connection);
-    if (!newConnection) {
-      throw new Error("Failed to insert/parse connections");
-    }
-
-    setAllConnections((connections) => [...connections, newConnection]);
-    setCreateIsDialogOpen(false);
   };
 
   const handleOnEditConnection = async (connection: ConnectionType) => {
@@ -105,28 +36,21 @@ export function Content({ connections }: Props2) {
     setEditIsDialogOpen(true);
   };
 
-  const handleConnectionEdited = async (connection: ConnectionType) => {
-    const editedConnections = await triggerEdit(connection);
-    if (!editedConnections) {
-      throw new Error("Failed to edit/parse connections");
-    }
+  const handleCreateConnection = async (connection: ConnectionType) => {
+    await insertConnection(connection);
 
-    setAllConnections((connections) =>
-      connections.map((c) => (c.id === connection.id ? connection : c)),
-    );
+    setCreateIsDialogOpen(false);
+  };
+
+  const handleConnectionEdited = async (connection: ConnectionType) => {
+    await editConnection(connection);
+
     setEditingConnection(undefined);
     setEditIsDialogOpen(false);
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {
-    const deletedConnections = await triggerDelete(connection.id);
-    if (!deletedConnections) {
-      throw new Error("Failed to delete/parse connections");
-    }
-
-    setAllConnections((connections) =>
-      connections.filter((c) => c.id !== connection.id),
-    );
+    await deleteConnection(connection.id);
   };
 
   const handleTestConnection = async (connection: ConnectionType) => {
@@ -154,9 +78,9 @@ export function Content({ connections }: Props2) {
       </Modal>
       <p>Hello.</p>
       <div className={"flex flex-col gap-2 w-1/2"}>
-        {allConnections.map((connection, index) => (
+        {connections.map((connection) => (
           <Connection
-            key={index}
+            key={connection.id}
             connection={connection}
             onDelete={handleDeleteConnection}
             onEdit={handleOnEditConnection}
