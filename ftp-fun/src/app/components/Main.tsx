@@ -25,7 +25,7 @@ export function Main({ connections: fetchedConnections }: Props) {
       connections={connections}
       setConnections={setConnections}
     >
-      <Content connections={connections} />
+      <Content />
     </ConnectionContextProvider>
   );
 }
