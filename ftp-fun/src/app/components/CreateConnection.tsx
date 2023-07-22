@@ -2,6 +2,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Connection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
+import { PartialBy } from "@/app/utils/types/PartialBy";
+
+type FormConnection = PartialBy<Connection, "verified">;
 
 interface Props {
   connection?: Connection;
@@ -13,10 +16,11 @@ export function CreateConnection({ connection, onChanged }: Props) {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Connection>({ defaultValues: connection });
+  } = useForm<FormConnection>({ defaultValues: connection });
 
-  const onSubmit: SubmitHandler<Connection> = (data) => {
-    onChanged(data);
+  const onSubmit: SubmitHandler<FormConnection> = (connection) => {
+    const verified = connection.verified ?? false;
+    onChanged({ ...connection, verified });
   };
 
   return (

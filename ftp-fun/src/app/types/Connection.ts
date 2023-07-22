@@ -1,21 +1,21 @@
 import { z } from "zod";
 
 export type Connection = {
-  id?: number;
+  id: number;
   hostname: string;
   port: number;
   username: string;
   password: string;
-  verified?: boolean;
+  verified: boolean;
 };
 
-const connectionSchema = z.object({
-  id: z.number().optional(),
+export const connectionSchema = z.object({
+  id: z.number(),
   hostname: z.string(),
   port: z.number(),
   username: z.string(),
   password: z.string(),
-  verified: z.boolean().optional(),
+  verified: z.boolean(),
 });
 
 const connectionsSchema = z.array(connectionSchema);

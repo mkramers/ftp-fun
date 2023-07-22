@@ -1,7 +1,7 @@
 import React from "react";
 import { Main } from "@/app/components/Main";
-import { getConnections } from "@/app/connections/route";
 import { SWRProvider } from "@/app/SWRProvider";
+import { getConnections } from "@/app/connections/db/utils";
 
 export default async function Home() {
   const connections = await getConnections();

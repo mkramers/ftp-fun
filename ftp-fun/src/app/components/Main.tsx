@@ -29,13 +29,10 @@ async function insertConnection(
   return tryParseConnections(body?.connections);
 }
 
-async function deleteConnection(
-  url: string,
-  { arg: connection }: { arg: ConnectionType },
-) {
+async function deleteConnection(url: string, { arg: id }: { arg: number }) {
   const response = await fetch(url, {
     method: "DELETE",
-    body: JSON.stringify(connection),
+    body: JSON.stringify({ id }),
   });
 
   const body = await response.json();
@@ -129,7 +126,7 @@ export function Main({ connections }: Props) {
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {
-    const deletedConnections = await triggerDelete(connection);
+    const deletedConnections = await triggerDelete(connection.id);
     if (!deletedConnections) {
       throw new Error("Failed to delete/parse connections");
     }
