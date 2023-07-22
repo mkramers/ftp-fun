@@ -1,6 +1,5 @@
 import React from "react";
 import { Main } from "@/app/components/Main";
-import { SWRProvider } from "@/app/SWRProvider";
 import { getConnections } from "@/app/connections/db/utils";
 
 export default async function Home() {
@@ -9,9 +8,5 @@ export default async function Home() {
     throw new Error("Failed to parse connections");
   }
 
-  return (
-    <SWRProvider>
-      <Main connections={connections} />
-    </SWRProvider>
-  );
+  return <Main connections={connections} />;
 }
