@@ -5,7 +5,7 @@ import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
 import {
   Connection as ConnectionType,
-  tryParseConnections,
+  tryParseConnection,
 } from "@/app/types/Connection";
 import { Connection } from "@/app/components/Connection";
 import { Button } from "@/app/components/Button/Button";
@@ -26,7 +26,7 @@ async function insertConnection(
 
   const body = await response.json();
 
-  return tryParseConnections(body?.connections);
+  return tryParseConnection(body?.connection);
 }
 
 async function deleteConnection(url: string, { arg: id }: { arg: number }) {
@@ -36,8 +36,7 @@ async function deleteConnection(url: string, { arg: id }: { arg: number }) {
   });
 
   const body = await response.json();
-
-  return tryParseConnections(body?.connections);
+  return tryParseConnection(body?.connection);
 }
 
 async function editConnection(
@@ -51,7 +50,7 @@ async function editConnection(
 
   const body = await response.json();
 
-  return tryParseConnections(body?.connections);
+  return tryParseConnection(body?.connection);
 }
 
 export function Main({ connections }: Props) {
@@ -72,9 +71,6 @@ export function Main({ connections }: Props) {
   const { trigger: triggerInsert } = useSWRMutation(
     "/connections",
     insertConnection,
-    {
-      optimisticData: [connections],
-    },
   );
 
   const { trigger: triggerDelete } = useSWRMutation(
@@ -88,9 +84,6 @@ export function Main({ connections }: Props) {
   const { trigger: triggerEdit } = useSWRMutation(
     "/connections",
     editConnection,
-    {
-      optimisticData: [connections],
-    },
   );
 
   const handleCreateConnectionClicked = () => {
@@ -98,12 +91,12 @@ export function Main({ connections }: Props) {
   };
 
   const handleCreateConnection = async (connection: ConnectionType) => {
-    const newConnections = await triggerInsert(connection);
-    if (!newConnections) {
+    const newConnection = await triggerInsert(connection);
+    if (!newConnection) {
       throw new Error("Failed to insert/parse connections");
     }
 
-    setAllConnections((connections) => [...connections, ...newConnections]);
+    setAllConnections((connections) => [...connections, newConnection]);
     setCreateIsDialogOpen(false);
   };
 

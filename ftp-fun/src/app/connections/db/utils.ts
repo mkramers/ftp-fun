@@ -24,11 +24,7 @@ export async function getConnection(id: number) {
     },
   );
 
-  if (!dbConnection) {
-    return undefined;
-  }
-
-  return parseQueryResult(dbConnection);
+  return dbConnection ? parseQueryResult(dbConnection) : undefined;
 }
 
 export async function getConnections() {
@@ -53,7 +49,7 @@ SET hostname = $hostname,
 WHERE id = $id
 RETURNING *;`;
 
-  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+  const result = await db.query<Required<DbConnection>[]>(query, {
     $id: connection.id,
     $hostname: connection.hostname,
     $port: connection.port,
@@ -62,7 +58,11 @@ RETURNING *;`;
     $verified: connection.verified ? 1 : 0,
   });
 
-  return dbConnections.map(parseQueryResult);
+  if (result.length > 1) {
+    throw new Error("More than one connection was updated");
+  }
+
+  return result.length > 0 ? parseQueryResult(result[0]) : undefined;
 }
 
 export async function deleteConnection(id: number) {
@@ -73,11 +73,15 @@ DELETE FROM connection
 WHERE id = $id
 RETURNING *;`;
 
-  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+  const result = await db.query<Required<DbConnection>[]>(query, {
     $id: id,
   });
 
-  return dbConnections.map(parseQueryResult);
+  if (result.length > 1) {
+    throw new Error("More than one connection was updated");
+  }
+
+  return result.length > 0 ? parseQueryResult(result[0]) : undefined;
 }
 
 export async function insertConnection(connection: Omit<Connection, "id">) {
@@ -85,12 +89,16 @@ export async function insertConnection(connection: Omit<Connection, "id">) {
 
   const query = `INSERT INTO connection (hostname, port, username, password) VALUES ($hostname, $port, $username, $password) RETURNING *;`;
 
-  const dbConnections = await db.query<Required<DbConnection>[]>(query, {
+  const result = await db.query<Required<DbConnection>[]>(query, {
     $hostname: connection.hostname,
     $port: connection.port,
     $username: connection.username,
     $password: connection.password,
   });
 
-  return dbConnections.map(parseQueryResult);
+  if (result.length > 1) {
+    throw new Error("More than one connection was inserted");
+  }
+
+  return result.length > 0 ? parseQueryResult(result[0]) : undefined;
 }

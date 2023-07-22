@@ -25,24 +25,22 @@ export async function POST(request: Request) {
 
   const { data: connection } = parsedBody;
 
-  const connections = await insertConnection(connection);
+  const newConnection = await insertConnection(connection);
 
-  return NextResponse.json({ connections });
+  return NextResponse.json({ connection: newConnection });
 }
 
 export async function PATCH(request: Request) {
   const body = await request.json();
-
-  const bodySchema = connectionSchema.partial({ id: true });
 
   const connection = tryParseConnection(body);
   if (!connection) {
     return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
 
-  const connections = await updateConnection(connection);
+  const updatedConnection = await updateConnection(connection);
 
-  return NextResponse.json({ connections });
+  return NextResponse.json({ connection: updatedConnection });
 }
 
 export async function DELETE(request: Request) {
@@ -56,7 +54,7 @@ export async function DELETE(request: Request) {
 
   const { id } = parsedBody.data;
 
-  const connections = await deleteConnection(id);
+  const connection = await deleteConnection(id);
 
-  return NextResponse.json({ connections });
+  return NextResponse.json({ connection });
 }
