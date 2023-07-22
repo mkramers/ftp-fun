@@ -19,12 +19,6 @@ export const connectionSchema = z.object({
 });
 
 export function tryParseConnection(input: unknown): Connection | undefined {
-  let connection: Connection;
-  try {
-    connection = connectionSchema.parse(input);
-  } catch (error) {
-    console.error(`Failed to parse connection: ${error}`);
-    return undefined;
-  }
-  return connection;
+  const parsedBody = connectionSchema.safeParse(input);
+  return parsedBody.success ? parsedBody.data : undefined;
 }
