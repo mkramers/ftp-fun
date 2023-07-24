@@ -42,22 +42,22 @@ export function Home({ initialConnections }: Props) {
   };
 
   const handleCreateConnection = async (connection: ConnectionType) => {
-    await insertConnection(connection);
-
     setIsCreateDialogOpen(false);
+
+    await insertConnection(connection);
   };
 
   const handleUpdateConnection = async (connection: ConnectionType) => {
-    await updateConnection(connection);
-
     setSelectedConnection(undefined);
     setIsEditDialogOpen(false);
+
+    await updateConnection(connection);
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {
-    await deleteConnection(connection.id);
-
     setSelectedConnection(undefined);
+
+    await deleteConnection(connection.id);
   };
 
   const handleTestConnection = async (connection: ConnectionType) => {
