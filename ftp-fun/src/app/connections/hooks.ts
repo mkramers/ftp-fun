@@ -1,4 +1,8 @@
-import { Connection, connectionSchema } from "@/app/types/Connection";
+import {
+  Connection,
+  connectionSchema,
+  PartialConnection,
+} from "@/app/types/Connection";
 import useSWRMutation from "swr/mutation";
 import useSWR from "swr";
 import { z } from "zod";
@@ -31,7 +35,10 @@ export function useConnections(initialConnections: Connection[]) {
   return connections;
 }
 
-const insertConnection = async (url: string, { arg }: { arg: Connection }) =>
+const insertConnection = async (
+  url: string,
+  { arg }: { arg: PartialConnection },
+) =>
   fetch(url, {
     method: "POST",
     body: JSON.stringify(arg),
@@ -42,7 +49,7 @@ export function useInsertConnection() {
     populateCache: (connection, connections) => [...connections, connection],
   });
 
-  return async (connection: Connection) => {
+  return async (connection: PartialConnection) => {
     await trigger(connection, {
       optimisticData: (connections) => [...connections, connection],
     });
@@ -100,28 +107,45 @@ export function useDeleteConnection() {
 }
 
 const verifyConnection = async (
-  url: string,
-  { arg }: { arg: { id: number } },
-) =>
-  fetch(url, {
-    method: "POST",
-    body: JSON.stringify(arg),
-  }).then((response) => response.json());
+  key: string,
+  { arg }: { arg: PartialConnection },
+) => {
+  // const url = new URL(`${key}/verify`);
+  const { id, verified, ...other } = arg;
+  const params = {
+    ...other,
+    port: arg.port.toString(),
+  };
+
+  const searchParams = new URLSearchParams(params).toString();
+  return fetch(key + "/?" + searchParams).then((response) => response.json());
+};
 
 export function useVerifyConnection() {
   const { trigger } = useSWRMutation("/connections/verify", verifyConnection, {
-    populateCache: (connection, connections) =>
-      connections.map((c: Connection) =>
-        c.id === connection.id ? connection : c,
-      ),
+    // populateCache: (connection, connections) =>
+    //   connections.map((c: Connection) =>
+    //     c.id === connection.id ? connection : c,
+    //   ),
   });
 
-  return async (connection: Connection) => {
-    await trigger(connection, {
-      optimisticData: (connections) =>
-        connections.map((c: Connection) =>
-          c.id === connection.id ? connection : c,
-        ),
+  return async (connection: PartialConnection) => {
+    const result = await trigger(connection, {
+      // optimisticData: (connections) =>
+      //   connections.map((c: Connection) =>
+      //     c.id === connection.id ? connection : c,
+      //   ),
     });
+
+    const parsedResult = z.object({ verified: z.boolean() }).safeParse(result);
+
+    if (!parsedResult.success) {
+      throw new Error("Failed to parse verify result");
+    }
+
+    const {
+      data: { verified },
+    } = parsedResult;
+    return verified;
   };
 }

@@ -7,7 +7,10 @@ import {
   useInsertConnection,
   useUpdateConnection,
 } from "@/app/connections/hooks";
-import { Connection as ConnectionType } from "@/app/types/Connection";
+import {
+  Connection as ConnectionType,
+  PartialConnection,
+} from "@/app/types/Connection";
 import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
 import { Connection } from "@/app/components/Connection";
@@ -41,17 +44,21 @@ export function Home({ initialConnections }: Props) {
     setIsEditDialogOpen(true);
   };
 
-  const handleCreateConnection = async (connection: ConnectionType) => {
+  const handleCreateConnection = async (connection: PartialConnection) => {
     setIsCreateDialogOpen(false);
 
     await insertConnection(connection);
   };
 
-  const handleUpdateConnection = async (connection: ConnectionType) => {
+  const handleUpdateConnection = async (connection: PartialConnection) => {
     setSelectedConnection(undefined);
     setIsEditDialogOpen(false);
 
-    await updateConnection(connection);
+    if (connection.id === undefined || connection.verified === undefined) {
+      return;
+    }
+
+    await updateConnection(connection as ConnectionType);
   };
 
   const handleDeleteConnection = async (connection: ConnectionType) => {

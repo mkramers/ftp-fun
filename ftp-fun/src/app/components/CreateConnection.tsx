@@ -1,19 +1,19 @@
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Connection } from "@/app/types/Connection";
+import { PartialConnection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
-import { PartialBy } from "@/app/utils/types/PartialBy";
 import React, { useEffect, useState } from "react";
-
-type FormConnection = PartialBy<Connection, "verified">;
+import { useVerifyConnection } from "@/app/connections/hooks";
 
 interface Props {
-  connection?: Connection;
-  onChanged: (data: Connection) => void;
+  connection?: PartialConnection;
+  onChanged: (data: PartialConnection) => void;
 }
 
 export function CreateConnection({ connection, onChanged }: Props) {
   const [isVerified, setIsVerified] = useState(false);
+
+  const verifyConnection = useVerifyConnection();
 
   useEffect(() => {
     setIsVerified(connection?.verified ?? false);
@@ -24,17 +24,17 @@ export function CreateConnection({ connection, onChanged }: Props) {
     handleSubmit,
     getValues,
     formState: { errors },
-  } = useForm<FormConnection>({ defaultValues: connection });
+  } = useForm<PartialConnection>({ defaultValues: connection });
 
-  const onSubmit: SubmitHandler<FormConnection> = (connection) => {
+  const onSubmit: SubmitHandler<PartialConnection> = (connection) => {
     const verified = connection.verified ?? false;
     onChanged({ ...connection, verified });
   };
 
   const handleTestConnection = async () => {
     const connection = getValues();
-
-    setIsVerified(true);
+    const verified = await verifyConnection(connection);
+    setIsVerified(verified);
   };
 
   return (
