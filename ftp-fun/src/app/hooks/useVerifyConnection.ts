@@ -6,7 +6,6 @@ const verifyConnection = async (
   key: string,
   { arg }: { arg: PartialConnection },
 ) => {
-  // const url = new URL(`${key}/verify`);
   const { id, verified, ...other } = arg;
   const params = {
     ...other,
@@ -18,20 +17,10 @@ const verifyConnection = async (
 };
 
 export function useVerifyConnection() {
-  const { trigger } = useSWRMutation("/connections/verify", verifyConnection, {
-    // populateCache: (connection, connections) =>
-    //   connections.map((c: Connection) =>
-    //     c.id === connection.id ? connection : c,
-    //   ),
-  });
+  const { trigger } = useSWRMutation("/connections/verify", verifyConnection);
 
   return async (connection: PartialConnection) => {
-    const result = await trigger(connection, {
-      // optimisticData: (connections) =>
-      //   connections.map((c: Connection) =>
-      //     c.id === connection.id ? connection : c,
-      //   ),
-    });
+    const result = await trigger(connection);
 
     const parsedResult = z.object({ verified: z.boolean() }).safeParse(result);
 
@@ -39,9 +28,6 @@ export function useVerifyConnection() {
       throw new Error("Failed to parse verify result");
     }
 
-    const {
-      data: { verified },
-    } = parsedResult;
-    return verified;
+    return parsedResult.data.verified;
   };
 }
