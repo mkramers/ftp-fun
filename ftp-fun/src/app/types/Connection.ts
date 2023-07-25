@@ -19,6 +19,8 @@ export const partialConnectionSchema = connectionSchema.partial({
   verified: true,
 });
 
+export type ConnectionBase = z.infer<typeof connectionBaseSchema>;
+
 export type PartialConnection = z.infer<typeof partialConnectionSchema>;
 
 export function tryParseConnectionBase(input: unknown) {

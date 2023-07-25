@@ -1,9 +1,9 @@
 import useSWRMutation from "swr/mutation";
-import { PartialConnection } from "@/app/types/Connection";
+import { ConnectionBase } from "@/app/types/Connection";
 
 const insertConnection = async (
   url: string,
-  { arg }: { arg: PartialConnection },
+  { arg }: { arg: ConnectionBase },
 ) =>
   fetch(url, {
     method: "POST",
@@ -15,7 +15,7 @@ export function useInsertConnection() {
     populateCache: (connection, connections) => [...connections, connection],
   });
 
-  return async (connection: PartialConnection) => {
+  return async (connection: ConnectionBase) => {
     await trigger(connection, {
       optimisticData: (connections) => [...connections, connection],
     });

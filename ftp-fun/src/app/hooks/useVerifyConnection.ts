@@ -1,14 +1,13 @@
-import { PartialConnection } from "@/app/types/Connection";
+import { ConnectionBase } from "@/app/types/Connection";
 import useSWRMutation from "swr/mutation";
 import { z } from "zod";
 
 const verifyConnection = async (
   key: string,
-  { arg }: { arg: PartialConnection },
+  { arg }: { arg: ConnectionBase },
 ) => {
-  const { id, verified, ...other } = arg;
   const params = {
-    ...other,
+    ...arg,
     port: arg.port.toString(),
   };
 
@@ -19,7 +18,7 @@ const verifyConnection = async (
 export function useVerifyConnection() {
   const { trigger } = useSWRMutation("/connections/verify", verifyConnection);
 
-  return async (connection: PartialConnection) => {
+  return async (connection: ConnectionBase) => {
     const result = await trigger(connection);
 
     const parsedResult = z.object({ verified: z.boolean() }).safeParse(result);
