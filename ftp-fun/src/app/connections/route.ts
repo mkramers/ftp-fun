@@ -1,13 +1,11 @@
 import { NextResponse } from "next/server";
 
 import { connectionSchema, tryParseConnection } from "@/app/types/Connection";
-import {
-  deleteConnection,
-  getConnections,
-  insertConnection,
-  updateConnection,
-} from "@/app/connections/db/utils";
 import { z } from "zod";
+import { getConnections } from "@/app/connections/db/queries/getConnections";
+import { updateConnection } from "@/app/connections/db/mutations/updateConnection";
+import { deleteConnection } from "@/app/connections/db/mutations/deleteConnection";
+import { insertConnection } from "@/app/connections/db/mutations/insertConnection";
 
 export async function GET() {
   const connections = await getConnections();
