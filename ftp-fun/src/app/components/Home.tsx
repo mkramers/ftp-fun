@@ -2,12 +2,6 @@
 
 import React, { useState } from "react";
 import {
-  useConnections,
-  useDeleteConnection,
-  useInsertConnection,
-  useUpdateConnection,
-} from "@/app/connections/hooks";
-import {
   Connection as ConnectionType,
   PartialConnection,
 } from "@/app/types/Connection";
@@ -15,6 +9,10 @@ import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
 import { Connection } from "@/app/components/Connection";
 import { Button } from "@/app/components/Button/Button";
+import { useConnections } from "@/app/hooks/useConnections";
+import { useInsertConnection } from "@/app/hooks/useInsertConnection";
+import { useUpdateConnection } from "@/app/hooks/useUpdateConnection";
+import { useDeleteConnection } from "@/app/hooks/useDeleteConnection";
 
 interface Props {
   initialConnections: ConnectionType[];

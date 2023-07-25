@@ -3,7 +3,8 @@ import { PartialConnection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
 import React, { useEffect, useState } from "react";
-import { useVerifyConnection } from "@/app/connections/hooks";
+
+import { useVerifyConnection } from "@/app/hooks/useVerifyConnection";
 
 interface Props {
   connection?: PartialConnection;
