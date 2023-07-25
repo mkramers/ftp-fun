@@ -1,4 +1,4 @@
-import { DbBase } from "./DbBase";
+import { DbBase } from "../../utils/db/DbBase";
 import { openSqlLiteDb } from "@/app/utils/db/openSqlLiteDb";
 
 let db: DbBase | undefined = undefined;

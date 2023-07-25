@@ -1,4 +1,4 @@
-import { getDb } from "@/app/utils/db/db";
+import { getDb } from "@/app/connections/db/getDb";
 import { DbConnection, parseQueryResult } from "@/app/connections/db/utils";
 
 export async function getConnections() {
