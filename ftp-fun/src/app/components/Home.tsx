@@ -103,7 +103,6 @@ export function Home({ initialConnections }: Props) {
         <CreateConnection
           connection={newConnection}
           onVerify={handleVerifyNewConnection}
-          // onChanged={setNewConnection}
           onConfirmed={handleCreateConnection}
         />
       </Modal>
