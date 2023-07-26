@@ -76,7 +76,7 @@ export function Home({ initialConnections }: Props) {
   const handleDeleteConnection = async (connection: ConnectionWithId) => {
     setSelectedConnection(undefined);
 
-    await deleteConnection(connection.id);
+    await deleteConnection(connection);
   };
 
   const handleVerifyNewConnection = async (connection: ConnectionType) => {
