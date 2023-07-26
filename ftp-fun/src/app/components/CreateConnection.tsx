@@ -18,23 +18,25 @@ export function CreateConnection<T extends Connection>({
   const {
     register,
     handleSubmit,
+    getValues,
     reset,
-    formState: { errors, defaultValues },
+    formState: { errors, defaultValues, isDirty, isValid },
   } = useForm<T>({ defaultValues: connection as DefaultValues<T> });
 
   useEffect(() => {
     reset(connection);
   }, [connection, reset]);
 
-  useEffect(() => {}, [defaultValues]);
-
   const onSubmit: SubmitHandler<T> = (connection) => {
     onConfirmed(connection);
   };
 
   const handleTestConnection = async () => {
+    const connection = getValues();
     onVerify(connection);
   };
+
+  const canSubmit = !isDirty && connection.verified;
 
   return (
     <form
@@ -80,7 +82,7 @@ export function CreateConnection<T extends Connection>({
 
       <div className={"flex flex-row justify-center gap-2"}>
         <Button onClick={handleTestConnection}>Test</Button>
-        <Button disabled={!connection.verified} type={"submit"}>
+        <Button disabled={!canSubmit} type={"submit"}>
           Submit
         </Button>
       </div>

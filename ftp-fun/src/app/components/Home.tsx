@@ -39,8 +39,7 @@ export function Home({ initialConnections }: Props) {
     ConnectionWithId | undefined
   >(undefined);
 
-  const [newConnection, setNewConnection] =
-    useState<ConnectionType>(defaultNewConnection);
+  const [newConnection, setNewConnection] = useState(defaultNewConnection);
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -91,7 +90,7 @@ export function Home({ initialConnections }: Props) {
   ) => {
     const verified = await verifyConnection(connection);
 
-    await updateConnection({ ...connection, verified });
+    setSelectedConnection({ ...connection, verified });
   };
 
   return (
@@ -104,6 +103,7 @@ export function Home({ initialConnections }: Props) {
         <CreateConnection
           connection={newConnection}
           onVerify={handleVerifyNewConnection}
+          // onChanged={setNewConnection}
           onConfirmed={handleCreateConnection}
         />
       </Modal>
