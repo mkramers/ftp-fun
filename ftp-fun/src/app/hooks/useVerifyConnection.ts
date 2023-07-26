@@ -1,11 +1,8 @@
-import { ConnectionBase } from "@/app/types/Connection";
+import { Connection } from "@/app/types/Connection";
 import useSWRMutation from "swr/mutation";
 import { z } from "zod";
 
-const verifyConnection = async (
-  key: string,
-  { arg }: { arg: ConnectionBase },
-) => {
+const verifyConnection = async (key: string, { arg }: { arg: Connection }) => {
   const params = {
     ...arg,
     port: arg.port.toString(),
@@ -18,7 +15,7 @@ const verifyConnection = async (
 export function useVerifyConnection() {
   const { trigger } = useSWRMutation("/connections/verify", verifyConnection);
 
-  return async (connection: ConnectionBase) => {
+  return async (connection: Connection) => {
     const result = await trigger(connection);
 
     const parsedResult = z.object({ verified: z.boolean() }).safeParse(result);

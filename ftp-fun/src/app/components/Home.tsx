@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import {
   Connection as ConnectionType,
-  PartialConnection,
+  ConnectionWithId,
 } from "@/app/types/Connection";
 import Modal from "@/app/components/Modal/Modal";
 import { CreateConnection } from "@/app/components/CreateConnection";
@@ -15,7 +15,7 @@ import { useUpdateConnection } from "@/app/hooks/useUpdateConnection";
 import { useDeleteConnection } from "@/app/hooks/useDeleteConnection";
 import { useVerifyConnection } from "@/app/hooks/useVerifyConnection";
 
-const defaultNewConnection: PartialConnection = {
+const defaultNewConnection: ConnectionType = {
   port: 22,
   hostname: "test",
   username: "user",
@@ -24,7 +24,7 @@ const defaultNewConnection: PartialConnection = {
 };
 
 interface Props {
-  initialConnections: ConnectionType[];
+  initialConnections: ConnectionWithId[];
 }
 
 export function Home({ initialConnections }: Props) {
@@ -36,11 +36,11 @@ export function Home({ initialConnections }: Props) {
   const verifyConnection = useVerifyConnection();
 
   const [selectedConnection, setSelectedConnection] = useState<
-    ConnectionType | undefined
+    ConnectionWithId | undefined
   >(undefined);
 
   const [newConnection, setNewConnection] =
-    useState<PartialConnection>(defaultNewConnection);
+    useState<ConnectionType>(defaultNewConnection);
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
@@ -51,19 +51,19 @@ export function Home({ initialConnections }: Props) {
     setIsCreateDialogOpen(true);
   };
 
-  const handleEditConnectionClicked = async (connection: ConnectionType) => {
+  const handleEditConnectionClicked = async (connection: ConnectionWithId) => {
     setSelectedConnection(connection);
     setIsEditDialogOpen(true);
   };
 
-  const handleCreateConnection = async (connection: PartialConnection) => {
+  const handleCreateConnection = async (connection: ConnectionType) => {
     setIsCreateDialogOpen(false);
     setSelectedConnection(undefined);
 
     await insertConnection(connection);
   };
 
-  const handleUpdateConnection = async (connection: ConnectionType) => {
+  const handleUpdateConnection = async (connection: ConnectionWithId) => {
     setIsEditDialogOpen(false);
     setSelectedConnection(undefined);
 
@@ -71,27 +71,27 @@ export function Home({ initialConnections }: Props) {
       return;
     }
 
-    await updateConnection(connection as ConnectionType);
+    await updateConnection(connection as ConnectionWithId);
   };
 
-  const handleDeleteConnection = async (connection: ConnectionType) => {
+  const handleDeleteConnection = async (connection: ConnectionWithId) => {
     setSelectedConnection(undefined);
 
     await deleteConnection(connection.id);
   };
 
-  const handleVerifyConnection = async (connection: PartialConnection) => {
+  const handleVerifyNewConnection = async (connection: ConnectionType) => {
     const verified = await verifyConnection(connection);
 
-    const { id } = connection;
+    setNewConnection({ ...connection, verified });
+  };
 
-    const existingConnection = id !== undefined;
-    if (!existingConnection) {
-      setNewConnection({ ...connection, verified });
-      return;
-    }
+  const handleVerifyExistingConnection = async (
+    connection: ConnectionWithId,
+  ) => {
+    const verified = await verifyConnection(connection);
 
-    await updateConnection({ ...connection, id, verified });
+    await updateConnection({ ...connection, verified });
   };
 
   return (
@@ -103,7 +103,7 @@ export function Home({ initialConnections }: Props) {
       >
         <CreateConnection
           connection={newConnection}
-          onVerify={handleVerifyConnection}
+          onVerify={handleVerifyNewConnection}
           onConfirmed={handleCreateConnection}
         />
       </Modal>
@@ -115,7 +115,7 @@ export function Home({ initialConnections }: Props) {
         >
           <CreateConnection
             connection={selectedConnection}
-            onVerify={handleVerifyConnection}
+            onVerify={handleVerifyExistingConnection}
             onConfirmed={handleUpdateConnection}
           />
         </Modal>
@@ -128,7 +128,7 @@ export function Home({ initialConnections }: Props) {
             connection={connection}
             onDelete={handleDeleteConnection}
             onUpdate={handleEditConnectionClicked}
-            onTest={handleVerifyConnection}
+            onTest={handleVerifyExistingConnection}
           />
         ))}
       </div>

@@ -1,4 +1,4 @@
-import { Connection, connectionSchema } from "@/app/types/Connection";
+import { connectionSchema, ConnectionWithId } from "@/app/types/Connection";
 import useSWR from "swr";
 import { z } from "zod";
 
@@ -7,7 +7,7 @@ async function getConnections(url: string) {
   return await response.json();
 }
 
-export function useConnections(initialConnections: Connection[]) {
+export function useConnections(initialConnections: ConnectionWithId[]) {
   const { data, error, isLoading } = useSWR("/connections", getConnections);
 
   if (error) {

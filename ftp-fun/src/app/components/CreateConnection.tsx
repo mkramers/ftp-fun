@@ -1,16 +1,16 @@
 import { DefaultValues, Path, SubmitHandler, useForm } from "react-hook-form";
-import { PartialConnection } from "@/app/types/Connection";
+import { Connection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
 import React, { useEffect } from "react";
 
-interface Props<T extends PartialConnection> {
+interface Props<T extends Connection> {
   connection: T;
   onConfirmed: (connection: T) => void;
   onVerify: (connection: T) => void;
 }
 
-export function CreateConnection<T extends PartialConnection>({
+export function CreateConnection<T extends Connection>({
   connection,
   onVerify,
   onConfirmed,

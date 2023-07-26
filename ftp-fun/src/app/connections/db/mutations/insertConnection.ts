@@ -1,8 +1,10 @@
-import { Connection } from "@/app/types/Connection";
+import { ConnectionWithId } from "@/app/types/Connection";
 import { getDb } from "@/app/connections/db/getDb";
 import { DbConnection, parseQueryResult } from "@/app/connections/db/utils";
 
-export async function insertConnection(connection: Omit<Connection, "id">) {
+export async function insertConnection(
+  connection: Omit<ConnectionWithId, "id">,
+) {
   const db = await getDb();
 
   const query = `INSERT INTO connection (hostname, port, username, password, verified) VALUES ($hostname, $port, $username, $password, $verified) RETURNING *;`;

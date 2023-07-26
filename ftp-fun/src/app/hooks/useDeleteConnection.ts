@@ -1,5 +1,5 @@
 import useSWRMutation from "swr/mutation";
-import { Connection } from "@/app/types/Connection";
+import { ConnectionWithId } from "@/app/types/Connection";
 
 const deleteConnection = async (
   url: string,
@@ -13,7 +13,7 @@ const deleteConnection = async (
 export function useDeleteConnection() {
   const { trigger } = useSWRMutation("/connections", deleteConnection, {
     populateCache: (connection, connections) =>
-      connections.filter((c: Connection) => c.id !== connection.id),
+      connections.filter((c: ConnectionWithId) => c.id !== connection.id),
   });
 
   return async (id: number) => {
@@ -21,7 +21,7 @@ export function useDeleteConnection() {
       { id },
       {
         optimisticData: (connections) =>
-          connections.filter((c: Connection) => c.id !== id),
+          connections.filter((c: ConnectionWithId) => c.id !== id),
       },
     );
   };

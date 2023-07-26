@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 
-import { connectionSchema, tryParseConnection } from "@/app/types/Connection";
+import {
+  connectionSchema,
+  tryParseConnectionWithId,
+} from "@/app/types/Connection";
 import { z } from "zod";
 import { getConnections } from "@/app/connections/db/queries/getConnections";
 import { updateConnection } from "@/app/connections/db/mutations/updateConnection";
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   const body = await request.json();
 
-  const connection = tryParseConnection(body);
+  const connection = tryParseConnectionWithId(body);
   if (!connection) {
     return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }

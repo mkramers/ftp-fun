@@ -1,4 +1,4 @@
-import { Connection as ConnectionType } from "@/app/types/Connection";
+import { ConnectionWithId as ConnectionType } from "@/app/types/Connection";
 import React from "react";
 import { Label } from "@/app/components/Label/Label";
 import { Button } from "@/app/components/Button/Button";

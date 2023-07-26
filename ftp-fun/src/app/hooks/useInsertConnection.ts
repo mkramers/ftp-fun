@@ -1,10 +1,7 @@
 import useSWRMutation from "swr/mutation";
-import { ConnectionBase } from "@/app/types/Connection";
+import { Connection } from "@/app/types/Connection";
 
-const insertConnection = async (
-  url: string,
-  { arg }: { arg: ConnectionBase },
-) =>
+const insertConnection = async (url: string, { arg }: { arg: Connection }) =>
   fetch(url, {
     method: "POST",
     body: JSON.stringify(arg),
@@ -15,7 +12,7 @@ export function useInsertConnection() {
     populateCache: (connection, connections) => [...connections, connection],
   });
 
-  return async (connection: ConnectionBase) => {
+  return async (connection: Connection) => {
     await trigger(connection, {
       optimisticData: (connections) => [
         ...connections,

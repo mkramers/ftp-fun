@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import { tryParseConnectionBase } from "@/app/types/Connection";
+import { tryParseConnection } from "@/app/types/Connection";
 
 export async function GET(request: Request) {
   const urlParams = new URL(request.url).searchParams;
   const params = Object.fromEntries(urlParams);
 
-  const connection = tryParseConnectionBase(params);
+  const connection = tryParseConnection(params);
   if (!connection) {
     return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
