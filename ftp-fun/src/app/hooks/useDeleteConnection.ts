@@ -4,7 +4,7 @@ import {
   tryParseConnectionWithId,
 } from "@/app/types/Connection";
 
-const removeConnection = (
+const updateCache = (
   connection: ConnectionWithId | undefined,
   connections: ConnectionWithId[] | undefined,
 ) => {
@@ -23,19 +23,29 @@ const deleteConnection = async (
     method: "DELETE",
     body: JSON.stringify(arg),
   });
+  if (response.status !== 200) {
+    console.warn(
+      `Failed to delete connection with status code: ${response.status}}`,
+    );
+    return undefined;
+  }
+
   const body = await response.json();
-  return tryParseConnectionWithId(body);
+  const connection = tryParseConnectionWithId(body);
+  if (!connection) {
+    throw new Error("Failed to parse connection");
+  }
+  return connection;
 };
 
 export function useDeleteConnection() {
   const { trigger } = useSWRMutation("/connections", deleteConnection, {
-    populateCache: removeConnection,
+    populateCache: updateCache,
   });
 
   return async (connection: ConnectionWithId) => {
     await trigger<ConnectionWithId[]>(connection, {
-      optimisticData: (connections) =>
-        removeConnection(connection, connections),
+      optimisticData: (connections) => updateCache(connection, connections),
     });
   };
 }

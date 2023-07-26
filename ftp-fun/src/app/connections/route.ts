@@ -58,5 +58,12 @@ export async function DELETE(request: Request) {
 
   const connection = await deleteConnection(id);
 
+  if (!connection) {
+    return NextResponse.json(
+      { message: "Connection doesn't exist" },
+      { status: 204 },
+    );
+  }
+
   return NextResponse.json(connection);
 }
