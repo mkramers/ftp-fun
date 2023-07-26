@@ -6,6 +6,7 @@ const verifyConnection = async (key: string, { arg }: { arg: Connection }) => {
   const params = {
     ...arg,
     port: arg.port.toString(),
+    verified: arg.verified.toString(),
   };
 
   const searchParams = new URLSearchParams(params).toString();
