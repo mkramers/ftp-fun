@@ -18,9 +18,7 @@ export function useConnections(initialConnections: Connection[]) {
     return initialConnections;
   }
 
-  const connectionsSchema = z.array(connectionSchema);
-
-  const parsed = connectionsSchema.safeParse(data);
+  const parsed = z.array(connectionSchema).safeParse(data);
   if (!parsed.success) {
     throw new Error("Failed to parse connections", parsed.error);
   }

@@ -17,7 +17,10 @@ export function useInsertConnection() {
 
   return async (connection: ConnectionBase) => {
     await trigger(connection, {
-      optimisticData: (connections) => [...connections, connection],
+      optimisticData: (connections) => [
+        ...connections,
+        { ...connection, id: 0 },
+      ],
     });
   };
 }

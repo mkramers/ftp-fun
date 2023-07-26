@@ -1,41 +1,39 @@
-import { SubmitHandler, useForm } from "react-hook-form";
+import { DefaultValues, Path, SubmitHandler, useForm } from "react-hook-form";
 import { PartialConnection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 
-import { useVerifyConnection } from "@/app/hooks/useVerifyConnection";
-
-interface Props {
-  connection?: PartialConnection;
-  onChanged: (data: PartialConnection) => void;
+interface Props<T extends PartialConnection> {
+  connection: T;
+  onConfirmed: (connection: T) => void;
+  onVerify: (connection: T) => void;
 }
 
-export function CreateConnection({ connection, onChanged }: Props) {
-  const [isVerified, setIsVerified] = useState(false);
-
-  const verifyConnection = useVerifyConnection();
-
-  useEffect(() => {
-    setIsVerified(connection?.verified ?? false);
-  }, [connection?.verified]);
-
+export function CreateConnection<T extends PartialConnection>({
+  connection,
+  onVerify,
+  onConfirmed,
+}: Props<T>) {
   const {
     register,
     handleSubmit,
-    getValues,
-    formState: { errors },
-  } = useForm<PartialConnection>({ defaultValues: connection });
+    reset,
+    formState: { errors, defaultValues },
+  } = useForm<T>({ defaultValues: connection as DefaultValues<T> });
 
-  const onSubmit: SubmitHandler<PartialConnection> = (connection) => {
-    const verified = connection.verified ?? false;
-    onChanged({ ...connection, verified });
+  useEffect(() => {
+    reset(connection);
+  }, [connection, reset]);
+
+  useEffect(() => {}, [defaultValues]);
+
+  const onSubmit: SubmitHandler<T> = (connection) => {
+    onConfirmed(connection);
   };
 
   const handleTestConnection = async () => {
-    const connection = getValues();
-    const verified = await verifyConnection(connection);
-    setIsVerified(verified);
+    onVerify(connection);
   };
 
   return (
@@ -45,7 +43,7 @@ export function CreateConnection({ connection, onChanged }: Props) {
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
-        name={"hostname"}
+        name={"hostname" as Path<T>}
         placeholder={"Host"}
         register={register}
         errors={errors}
@@ -53,7 +51,7 @@ export function CreateConnection({ connection, onChanged }: Props) {
         Host:{" "}
       </Input>
       <Input
-        name={"port"}
+        name={"port" as Path<T>}
         placeholder={"Port"}
         type={"number"}
         register={register}
@@ -63,7 +61,7 @@ export function CreateConnection({ connection, onChanged }: Props) {
         Port:{" "}
       </Input>
       <Input
-        name={"username"}
+        name={"username" as Path<T>}
         placeholder={"Username"}
         register={register}
         errors={errors}
@@ -71,7 +69,7 @@ export function CreateConnection({ connection, onChanged }: Props) {
         Username:{" "}
       </Input>
       <Input
-        name={"password"}
+        name={"password" as Path<T>}
         placeholder={"**********"}
         type={"password"}
         register={register}
@@ -82,7 +80,7 @@ export function CreateConnection({ connection, onChanged }: Props) {
 
       <div className={"flex flex-row justify-center gap-2"}>
         <Button onClick={handleTestConnection}>Test</Button>
-        <Button disabled={!isVerified} type={"submit"}>
+        <Button disabled={!connection.verified} type={"submit"}>
           Submit
         </Button>
       </div>

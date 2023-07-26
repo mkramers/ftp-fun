@@ -5,22 +5,19 @@ export const connectionBaseSchema = z.object({
   port: z.coerce.number(),
   username: z.string(),
   password: z.string(),
+  verified: z.coerce.boolean(),
 });
 
 export const connectionSchema = connectionBaseSchema.extend({
   id: z.coerce.number(),
-  verified: z.coerce.boolean(),
 });
-
-export type Connection = z.infer<typeof connectionSchema>;
 
 export const partialConnectionSchema = connectionSchema.partial({
   id: true,
-  verified: true,
 });
 
 export type ConnectionBase = z.infer<typeof connectionBaseSchema>;
-
+export type Connection = z.infer<typeof connectionSchema>;
 export type PartialConnection = z.infer<typeof partialConnectionSchema>;
 
 export function tryParseConnectionBase(input: unknown) {
@@ -30,10 +27,5 @@ export function tryParseConnectionBase(input: unknown) {
 
 export function tryParseConnection(input: unknown) {
   const parsedBody = connectionSchema.safeParse(input);
-  return parsedBody.success ? parsedBody.data : undefined;
-}
-
-export function tryParsePartialConnection(input: unknown) {
-  const parsedBody = partialConnectionSchema.safeParse(input);
   return parsedBody.success ? parsedBody.data : undefined;
 }

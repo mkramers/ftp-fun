@@ -5,13 +5,14 @@ import { DbConnection, parseQueryResult } from "@/app/connections/db/utils";
 export async function insertConnection(connection: Omit<Connection, "id">) {
   const db = await getDb();
 
-  const query = `INSERT INTO connection (hostname, port, username, password) VALUES ($hostname, $port, $username, $password) RETURNING *;`;
+  const query = `INSERT INTO connection (hostname, port, username, password, verified) VALUES ($hostname, $port, $username, $password, $verified) RETURNING *;`;
 
   const result = await db.query<Required<DbConnection>[]>(query, {
     $hostname: connection.hostname,
     $port: connection.port,
     $username: connection.username,
     $password: connection.password,
+    $verified: connection.verified,
   });
 
   if (result.length > 1) {
