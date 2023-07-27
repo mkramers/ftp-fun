@@ -81,6 +81,9 @@ export function Home({ initialConnections }: Props) {
 
   const handleVerifyNewConnection = async (connection: ConnectionType) => {
     const verified = await verifyConnection(connection);
+    if (verified === undefined) {
+      throw new Error("Connection could not be verified");
+    }
 
     setNewConnection({ ...connection, verified });
   };
@@ -89,6 +92,9 @@ export function Home({ initialConnections }: Props) {
     connection: ConnectionWithId,
   ) => {
     const verified = await verifyConnection(connection);
+    if (verified === undefined) {
+      throw new Error("Connection could not be verified");
+    }
 
     setSelectedConnection({ ...connection, verified });
   };
@@ -121,7 +127,7 @@ export function Home({ initialConnections }: Props) {
       )}
       <p>Hello.</p>
       <div className={"flex flex-col gap-2 w-1/2"}>
-        {connections.map((connection) => (
+        {connections?.map((connection) => (
           <Connection
             key={connection.id}
             connection={connection}

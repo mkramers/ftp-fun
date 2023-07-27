@@ -4,7 +4,24 @@ import { z } from "zod";
 
 async function getConnections(url: string) {
   const response = await fetch(url);
-  return await response.json();
+
+  if (response.status !== 200) {
+    console.warn(
+      `Failed to get connections with status code: ${response.status}}`,
+    );
+    return [];
+  }
+
+  const body = await response.json();
+
+  const parsed = z.array(connectionSchema).safeParse(body);
+  if (!parsed.success) {
+    throw new Error("Failed to parse connections", parsed.error);
+  }
+
+  const { data: connections } = parsed;
+
+  return connections;
 }
 
 export function useConnections(initialConnections: ConnectionWithId[]) {
@@ -18,12 +35,5 @@ export function useConnections(initialConnections: ConnectionWithId[]) {
     return initialConnections;
   }
 
-  const parsed = z.array(connectionSchema).safeParse(data);
-  if (!parsed.success) {
-    throw new Error("Failed to parse connections", parsed.error);
-  }
-
-  const { data: connections } = parsed;
-
-  return connections;
+  return data;
 }

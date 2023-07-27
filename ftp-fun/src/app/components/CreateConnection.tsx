@@ -36,7 +36,8 @@ export function CreateConnection<T extends Connection>({
     onVerify(connection);
   };
 
-  const canSubmit = !isDirty && connection.verified;
+  const canVerify = isValid;
+  const canSubmit = isValid && !isDirty && connection.verified;
 
   return (
     <form
@@ -81,7 +82,9 @@ export function CreateConnection<T extends Connection>({
       </Input>
 
       <div className={"flex flex-row justify-center gap-2"}>
-        <Button onClick={handleTestConnection}>Test</Button>
+        <Button disabled={!canVerify} onClick={handleTestConnection}>
+          Test
+        </Button>
         <Button disabled={!canSubmit} type={"submit"}>
           Submit
         </Button>

@@ -10,21 +10,28 @@ const verifyConnection = async (key: string, { arg }: { arg: Connection }) => {
   };
 
   const searchParams = new URLSearchParams(params).toString();
-  return fetch(key + "/?" + searchParams).then((response) => response.json());
+  const response = await fetch(key + "/?" + searchParams);
+
+  if (response.status !== 200) {
+    console.warn(
+      `Failed to verify connection with status code: ${response.status}}`,
+    );
+    return undefined;
+  }
+
+  const body = await response.json();
+
+  const parsedResult = z.object({ verified: z.boolean() }).safeParse(body);
+
+  if (!parsedResult.success) {
+    throw new Error("Failed to parse verify result");
+  }
+
+  return parsedResult.data.verified;
 };
 
 export function useVerifyConnection() {
   const { trigger } = useSWRMutation("/connections/verify", verifyConnection);
 
-  return async (connection: Connection) => {
-    const result = await trigger(connection);
-
-    const parsedResult = z.object({ verified: z.boolean() }).safeParse(result);
-
-    if (!parsedResult.success) {
-      throw new Error("Failed to parse verify result");
-    }
-
-    return parsedResult.data.verified;
-  };
+  return trigger;
 }

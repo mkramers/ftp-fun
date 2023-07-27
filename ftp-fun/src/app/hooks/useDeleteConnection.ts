@@ -12,6 +12,7 @@ const deleteConnection = async (
     method: "DELETE",
     body: JSON.stringify(arg),
   });
+
   if (response.status !== 200) {
     console.warn(
       `Failed to delete connection with status code: ${response.status}}`,
@@ -21,9 +22,11 @@ const deleteConnection = async (
 
   const body = await response.json();
   const connection = tryParseConnectionWithId(body);
+
   if (!connection) {
     throw new Error("Failed to parse connection");
   }
+
   return connection;
 };
 
