@@ -31,7 +31,7 @@ export function CreateConnection<T extends Connection>({
     onConfirmed({ ...connection, ...newConnection });
   };
 
-  const handleTestConnection = async () => {
+  const handleVerifyConnection = async () => {
     const newValues = getValues();
     onVerify({ ...connection, ...newValues });
   };
@@ -80,7 +80,7 @@ export function CreateConnection<T extends Connection>({
       </Input>
 
       <div className={"flex flex-row justify-center gap-2"}>
-        <Button disabled={!canVerify} onClick={handleTestConnection}>
+        <Button disabled={!canVerify} onClick={handleVerifyConnection}>
           Test
         </Button>
         <Button disabled={!canSubmit} type={"submit"}>

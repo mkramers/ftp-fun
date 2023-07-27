@@ -8,10 +8,15 @@ interface Props {
   connection: ConnectionType;
   onDelete: (connection: ConnectionType) => void;
   onUpdate: (connection: ConnectionType) => void;
-  onTest: (connection: ConnectionType) => void;
+  onVerify: (connection: ConnectionType) => void;
 }
 
-export function Connection({ connection, onDelete, onUpdate, onTest }: Props) {
+export function Connection({
+  connection,
+  onDelete,
+  onUpdate,
+  onVerify,
+}: Props) {
   const [isViewing, setIsViewing] = useState(false);
 
   return (
@@ -26,7 +31,7 @@ export function Connection({ connection, onDelete, onUpdate, onTest }: Props) {
       <Label title={"Username"} value={connection.username} />
       <div className={"flex flex-row justify-center gap-2"}>
         <Button onClick={() => onUpdate(connection)}>Edit</Button>
-        <Button onClick={() => onTest(connection)}>Test</Button>
+        <Button onClick={() => onVerify(connection)}>Test</Button>
         <Button onClick={() => onDelete(connection)}>Delete</Button>
         <Button onClick={() => setIsViewing((viewing) => !viewing)}>
           List

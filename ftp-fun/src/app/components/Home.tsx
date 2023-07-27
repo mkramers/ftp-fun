@@ -133,7 +133,7 @@ export function Home({ initialConnections }: Props) {
             connection={connection}
             onDelete={handleDeleteConnection}
             onUpdate={handleEditConnectionClicked}
-            onTest={handleVerifyExistingConnection}
+            onVerify={handleVerifyExistingConnection}
           />
         ))}
       </div>
