@@ -6,12 +6,16 @@ export async function getConnection(id: number) {
 
   const query = `SELECT * FROM connection WHERE id = $id;`;
 
-  const dbConnection = await db.query<Required<DbConnection> | undefined>(
-    query,
-    {
-      $id: id,
-    },
-  );
+  const result = await db.query<Required<DbConnection>[]>(query, {
+    $id: id,
+  });
 
-  return dbConnection ? parseQueryResult(dbConnection) : undefined;
+  if (result.length > 1) {
+    throw new Error(`Multiple connections found for connection id: ${id}`);
+  }
+  if (result.length === 0) {
+    return undefined;
+  }
+
+  return parseQueryResult(result[0]);
 }

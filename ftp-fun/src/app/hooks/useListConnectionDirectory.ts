@@ -1,8 +1,19 @@
 import useSWR from "swr";
+import { ConnectionWithId } from "@/app/types/Connection";
 
-async function listDirectory(connectionId: number, directory: string) {
-  const url = `/connections/list?connectionId=${connectionId}&directory=${directory}`;
+async function listDirectory(
+  key: string,
+  connectionId: number,
+  directory: string,
+) {
+  const data = {
+    connectionId: connectionId.toString(),
+    directory,
+  };
 
+  const searchParams = new URLSearchParams(data);
+
+  const url = `${key}?${searchParams.toString()}`;
   const response = await fetch(url);
 
   if (response.status !== 200) {
@@ -17,10 +28,15 @@ async function listDirectory(connectionId: number, directory: string) {
 }
 
 export function useListConnectionDirectory(
-  connectionId: number,
+  connection: ConnectionWithId,
   directory: string,
 ) {
-  return useSWR("/connections/list", listDirectory, {
-    revalidateOnFocus: false,
-  });
+  return useSWR(
+    ["/connections/list", connection.id, directory],
+    ([url, connectionId, directory]) =>
+      listDirectory(url, connectionId, directory),
+    {
+      revalidateOnFocus: false,
+    },
+  );
 }

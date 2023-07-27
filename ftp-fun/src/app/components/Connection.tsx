@@ -1,7 +1,8 @@
 import { ConnectionWithId as ConnectionType } from "@/app/types/Connection";
-import React from "react";
+import React, { useState } from "react";
 import { Label } from "@/app/components/Label/Label";
 import { Button } from "@/app/components/Button/Button";
+import { DirectoryList } from "@/app/components/DirectoryList";
 
 interface Props {
   connection: ConnectionType;
@@ -11,6 +12,8 @@ interface Props {
 }
 
 export function Connection({ connection, onDelete, onUpdate, onTest }: Props) {
+  const [isViewing, setIsViewing] = useState(false);
+
   return (
     <div
       className={
@@ -25,7 +28,16 @@ export function Connection({ connection, onDelete, onUpdate, onTest }: Props) {
         <Button onClick={() => onUpdate(connection)}>Edit</Button>
         <Button onClick={() => onTest(connection)}>Test</Button>
         <Button onClick={() => onDelete(connection)}>Delete</Button>
+        <Button onClick={() => setIsViewing((viewing) => !viewing)}>
+          List
+        </Button>
       </div>
+      {isViewing && (
+        <DirectoryList
+          connection={connection}
+          directory={"/home3/deathman666"}
+        />
+      )}
     </div>
   );
 }

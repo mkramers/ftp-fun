@@ -5,10 +5,11 @@ import { getConnection } from "@/app/connections/db/queries/getConnection";
 
 export async function GET(request: Request) {
   const urlParams = new URL(request.url).searchParams;
+  console.log("urlParams", urlParams);
   const params = Object.fromEntries(urlParams);
 
   const parsed = z
-    .object({ connectionId: z.number(), directory: z.string() })
+    .object({ connectionId: z.coerce.number(), directory: z.string() })
     .safeParse(params);
   if (!parsed.success) {
     return NextResponse.json(
@@ -29,6 +30,7 @@ export async function GET(request: Request) {
     );
   }
 
+  console.log("connection", connection);
   const sftp = await tryConnect(connection);
   if (!sftp) {
     return NextResponse.json(
