@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { tryParseConnection } from "@/app/types/Connection";
+import { tryConnect } from "@/app/utils/sftp/connect";
 
 export async function GET(request: Request) {
   const urlParams = new URL(request.url).searchParams;
@@ -10,8 +11,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Invalid body" }, { status: 422 });
   }
 
-  // todo: test connection
-  const verified = true;
+  const sftp = await tryConnect(connection);
+  const verified = !!sftp;
 
   return NextResponse.json({ verified });
 }
