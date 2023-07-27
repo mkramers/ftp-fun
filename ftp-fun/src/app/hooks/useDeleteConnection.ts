@@ -4,17 +4,6 @@ import {
   tryParseConnectionWithId,
 } from "@/app/types/Connection";
 
-const updateCache = (
-  connection: ConnectionWithId | undefined,
-  connections: ConnectionWithId[] | undefined,
-) => {
-  if (!connections || !connection) {
-    return [] as ConnectionWithId[];
-  }
-
-  return connections.filter(({ id }) => id !== connection.id);
-};
-
 const deleteConnection = async (
   url: string,
   { arg }: { arg: ConnectionWithId },
@@ -40,12 +29,14 @@ const deleteConnection = async (
 
 export function useDeleteConnection() {
   const { trigger } = useSWRMutation("/connections", deleteConnection, {
-    populateCache: updateCache,
+    populateCache: (connection, connections: ConnectionWithId[]) =>
+      connections.filter(({ id }) => id !== connection?.id),
   });
 
   return async (connection: ConnectionWithId) => {
     await trigger<ConnectionWithId[]>(connection, {
-      optimisticData: (connections) => updateCache(connection, connections),
+      optimisticData: (connections) =>
+        connections?.filter(({ id }) => id !== connection?.id) ?? [],
     });
   };
 }
