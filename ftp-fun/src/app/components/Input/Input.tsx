@@ -32,15 +32,13 @@ export function Input<T extends InternalFieldName>({
         {children}
       </label>
       <input
-        autoComplete={"false"}
-        className={
-          hasError
-            ? "shadow appearance-none border border-red-500 rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-            : "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        }
-        placeholder={placeholder}
-        type={type}
         id={id}
+        type={type}
+        placeholder={placeholder}
+        autoComplete={"false"}
+        className={`shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline mb-1 ${
+          hasError ? "border-red-500" : ""
+        }`}
         {...extraProps}
       />
       {hasError && (
