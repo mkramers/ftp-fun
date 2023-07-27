@@ -20,7 +20,7 @@ export function CreateConnection<T extends Connection>({
     handleSubmit,
     getValues,
     reset,
-    formState: { errors, defaultValues, isDirty, isValid },
+    formState: { errors, isDirty, isValid },
   } = useForm<Connection>({ mode: "onTouched" });
 
   useEffect(() => {
