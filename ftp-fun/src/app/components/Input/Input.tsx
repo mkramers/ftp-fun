@@ -1,7 +1,6 @@
-import { InternalFieldName } from "react-hook-form/dist/types/fields";
 import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
 
-interface InputProps<T extends InternalFieldName> {
+interface InputProps {
   id: string;
   type?: "text" | "password" | "number";
   placeholder?: string;
@@ -14,7 +13,7 @@ interface InputProps<T extends InternalFieldName> {
   children: ReactNode;
 }
 
-export function Input<T extends InternalFieldName>({
+export function Input({
   id,
   type = "text",
   placeholder,
@@ -22,7 +21,7 @@ export function Input<T extends InternalFieldName>({
   errorMessage = "This field is required",
   extraProps,
   children,
-}: InputProps<T>) {
+}: InputProps) {
   return (
     <div className={"mb-4"}>
       <label
