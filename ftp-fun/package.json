@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@types/ssh2-sftp-client": "^9.0.0",
-    "dbmate": "^2.5.0"
+    "dbmate": "^2.5.0",
+    "node-loader": "^2.0.0"
   }
 }
