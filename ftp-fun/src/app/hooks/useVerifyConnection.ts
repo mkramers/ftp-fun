@@ -3,14 +3,10 @@ import useSWRMutation from "swr/mutation";
 import { z } from "zod";
 
 const verifyConnection = async (key: string, { arg }: { arg: Connection }) => {
-  const params = {
-    ...arg,
-    port: arg.port.toString(),
-    verified: arg.verified.toString(),
-  };
+  const { hostname, port, username, password } = arg;
+  const url = `${key}?hostname=${hostname}&port=${port}&username=${username}&password=${password}`;
 
-  const searchParams = new URLSearchParams(params).toString();
-  const response = await fetch(key + "/?" + searchParams);
+  const response = await fetch(url);
 
   if (response.status !== 200) {
     console.warn(
