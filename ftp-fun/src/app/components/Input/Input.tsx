@@ -1,37 +1,33 @@
-import { FieldValues } from "react-hook-form/dist/types/fields";
-import { Path } from "react-hook-form";
-import { UseFormRegister } from "react-hook-form/dist/types/form";
-import { FieldErrors } from "react-hook-form/dist/types/errors";
-import { PropsWithChildren } from "react";
-import { RegisterOptions } from "react-hook-form/dist/types/validator";
+import { InternalFieldName } from "react-hook-form/dist/types/fields";
+import { DetailedHTMLProps, InputHTMLAttributes, ReactNode } from "react";
 
-interface InputProps<TFieldValues extends FieldValues> {
-  name: Path<TFieldValues>;
-  placeholder?: string;
-  errorMessage?: string;
-  register: UseFormRegister<TFieldValues>;
-  errors: FieldErrors<TFieldValues>;
+interface InputProps<T extends InternalFieldName> {
+  id: string;
   type?: "text" | "password" | "number";
-  options?: RegisterOptions<TFieldValues>;
+  placeholder?: string;
+  hasError?: boolean;
+  errorMessage?: string;
+  extraProps?: DetailedHTMLProps<
+    InputHTMLAttributes<HTMLInputElement>,
+    HTMLInputElement
+  >;
+  children: ReactNode;
 }
 
-export function Input<TFieldValues extends FieldValues>({
-  name,
-  placeholder,
-  errorMessage = "This field is required",
-  register,
-  errors,
-  children,
+export function Input<T extends InternalFieldName>({
+  id,
   type = "text",
-  options,
-}: PropsWithChildren<InputProps<TFieldValues>>) {
-  const hasError = !!errors[name];
-
+  placeholder,
+  hasError,
+  errorMessage = "This field is required",
+  extraProps,
+  children,
+}: InputProps<T>) {
   return (
     <div className={"mb-4"}>
       <label
         className={"block text-gray-700 text-sm font-bold mb-2"}
-        htmlFor={name}
+        htmlFor={id}
       >
         {children}
       </label>
@@ -44,8 +40,8 @@ export function Input<TFieldValues extends FieldValues>({
         }
         placeholder={placeholder}
         type={type}
-        id={name}
-        {...register(name, options)}
+        id={id}
+        {...extraProps}
       />
       {hasError && (
         <p className={"text-red-500 text-xs italic"}>{errorMessage}</p>

@@ -1,4 +1,4 @@
-import { DefaultValues, Path, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { Connection } from "@/app/types/Connection";
 import { Button } from "@/app/components/Button/Button";
 import { Input } from "@/app/components/Input/Input";
@@ -21,19 +21,19 @@ export function CreateConnection<T extends Connection>({
     getValues,
     reset,
     formState: { errors, defaultValues, isDirty, isValid },
-  } = useForm<T>({ defaultValues: connection as DefaultValues<T> });
+  } = useForm<Connection>({ mode: "onTouched" });
 
   useEffect(() => {
     reset(connection);
   }, [connection, reset]);
 
-  const onSubmit: SubmitHandler<T> = (connection) => {
-    onConfirmed(connection);
+  const onSubmit: SubmitHandler<Connection> = (newConnection) => {
+    onConfirmed({ ...connection, ...newConnection });
   };
 
   const handleTestConnection = async () => {
-    const connection = getValues();
-    onVerify(connection);
+    const newValues = getValues();
+    onVerify({ ...connection, ...newValues });
   };
 
   const canVerify = isValid;
@@ -46,37 +46,35 @@ export function CreateConnection<T extends Connection>({
       onSubmit={handleSubmit(onSubmit)}
     >
       <Input
-        name={"hostname" as Path<T>}
-        placeholder={"Host"}
-        register={register}
-        errors={errors}
+        id={"hostname"}
+        placeholder={"Hostname"}
+        hasError={!!errors.hostname}
+        extraProps={register("hostname", { required: true })}
       >
-        Host:{" "}
+        Hostname:{" "}
       </Input>
       <Input
-        name={"port" as Path<T>}
+        id={"port"}
         placeholder={"Port"}
-        type={"number"}
-        register={register}
-        options={{ valueAsNumber: true }}
-        errors={errors}
+        hasError={!!errors.port}
+        extraProps={register("port", { required: true })}
       >
         Port:{" "}
       </Input>
       <Input
-        name={"username" as Path<T>}
+        id={"username"}
         placeholder={"Username"}
-        register={register}
-        errors={errors}
+        hasError={!!errors.username}
+        extraProps={register("username", { required: true })}
       >
         Username:{" "}
       </Input>
       <Input
-        name={"password" as Path<T>}
-        placeholder={"**********"}
+        id={"password"}
         type={"password"}
-        register={register}
-        errors={errors}
+        placeholder={"***************"}
+        hasError={!!errors.password}
+        extraProps={register("password", { required: true })}
       >
         Password:{" "}
       </Input>
